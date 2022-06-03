@@ -28,8 +28,13 @@ def register(request):
         role=request.POST.get('role')
 
         try:
-            record=Register(first_name=fname,last_name=lname,email=mail,contact_no=contact,whatsapp_no=whatsapp,role=role,created_at=date.today())
-            record.save()
+            if(Register.objects.exists()):
+                c=Register.objects.count()
+                record=Register(first_name=fname,last_name=lname,email=mail,contact_no=contact,whatsapp_no=whatsapp,role=role,created_at=date.today(),number=c)
+                record.save()
+            else:
+                record=Register(first_name=fname,last_name=lname,email=mail,contact_no=contact,whatsapp_no=whatsapp,role=role,created_at=date.today(),number=0)
+                record.save()
             messages.success(request, 'Successfully Registered!')
         except:
             messages.error(request, 'Something went wrong!!!')
@@ -56,3 +61,9 @@ def loginn(request):
 
         return render(request,'login.html')
     return render(request,'login.html')    
+
+
+
+def logoutt(request):
+    logout(request)
+    return redirect('home')

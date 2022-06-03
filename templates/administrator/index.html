@@ -1,8 +1,27 @@
-{% extends 'Base.html' %}
-{% block title %} Home {% endblock title %}
+{% extends 'Base.html' %} {% block title %} Home {% endblock title %} {% block body %}
 
-{% block body %}
 
-<h1>hi admin</h1>
+<section class="bg-light p-5">
+
+    <h3 class="pb-4 my-2">Requests</h3>
+
+    <div class="table-responsive table table-bordered">
+        <table class="table bg-white" id="example-table">
+            <thead class="bg-dark text-light">
+                <tr>
+                    <th>Serial Number</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Contact</th>
+                    <th>WhatsApp</th>
+                    <th>Role</th>
+
+                </tr>
+            </thead>
+            <tbody id="dog"></tbody>
+        </table>
+    </div>
+</section>
+<script src="/static/scripts/administrator/script.js"></script>
 
 {% endblock body %}
