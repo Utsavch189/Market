@@ -2,6 +2,23 @@
 
 
 <section class="bg-light p-5">
+    <form action="" method="post">
+        {% csrf_token %}
+        <select name="role" id="role" class="p-3">
+    <option value="">None</option>
+    </select>
+        <button type="submit" class="btn btn-danger" value="register">Delete</button>
+
+
+    </form>
+
+    <form action="" method="post">
+        {% csrf_token %}
+        <select name="approved" id="approved" class="p-3">
+            <option value="">None</option>
+    </select>
+        <button type="submit" class="btn btn-success" value="register">Approve</button>
+    </form>
 
     <h3 class="pb-4 my-2">Requests</h3>
 

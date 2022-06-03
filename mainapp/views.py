@@ -30,10 +30,10 @@ def register(request):
         try:
             if(Register.objects.exists()):
                 c=Register.objects.count()
-                record=Register(first_name=fname,last_name=lname,email=mail,contact_no=contact,whatsapp_no=whatsapp,role=role,created_at=date.today(),number=c)
+                record=Register(first_name=fname,last_name=lname,email=mail,contact_no=contact,whatsapp_no=whatsapp,role=role,created_at=date.today(),number=c+1)
                 record.save()
             else:
-                record=Register(first_name=fname,last_name=lname,email=mail,contact_no=contact,whatsapp_no=whatsapp,role=role,created_at=date.today(),number=0)
+                record=Register(first_name=fname,last_name=lname,email=mail,contact_no=contact,whatsapp_no=whatsapp,role=role,created_at=date.today(),number=1)
                 record.save()
             messages.success(request, 'Successfully Registered!')
         except:
