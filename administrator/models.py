@@ -1,6 +1,10 @@
 from django.db import models
+from django.contrib.auth.models import User
+
 
 class ApprovedUsers(models.Model):
+    author=models.ForeignKey(User, default=None, on_delete=models.CASCADE)
+    userid=models.CharField(null=True,blank=True,max_length=500)
     first_name=models.CharField(null=True,blank=True,max_length=500)
     last_name=models.CharField(null=True,blank=True,max_length=500)
     email=models.CharField(null=True,blank=True,max_length=500)

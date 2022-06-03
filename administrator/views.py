@@ -8,7 +8,11 @@ from mainapp.models import Register
 import json
 from .models import ApprovedUsers
 from django.contrib.auth.models import User
-# Create your views here.
+from .user import mail,password,useID
+
+
+
+
 @login_required(login_url='http://127.0.0.1:8000/login/')
 def index(request):
     if request.method=='GET':
@@ -22,9 +26,28 @@ def index(request):
         if approved!=None:
             r_obj=Register.objects.filter(number=str(approved))
             if r_obj.exists():
-                approvedUser=ApprovedUsers(first_name=r_obj.values('first_name')[0]['first_name'],last_name=r_obj.values('last_name')[0]['last_name'],email=r_obj.values('email')[0]['email'],contact_no=r_obj.values('contact_no')[0]['contact_no'],whatsapp_no=r_obj.values('whatsapp_no')[0]['whatsapp_no'],role=r_obj.values('role')[0]['role'])
-                approvedUser.save()
-            
+                
+                Password=password()
+                name=str( r_obj.values('first_name')[0]['first_name'])+' '+str(r_obj.values('last_name')[0]['last_name'])
+                email=r_obj.values('email')[0]['email']
+                userid=useID(r_obj.values('first_name')[0]['first_name'])
+              
+
+                
+                try:
+                    mail(email,name,r_obj.values('role')[0]['role'],userid,Password)
+                    user=User.objects.create_user(userid, email, Password)
+                    user.first_name =name
+                    user.last_name = r_obj.values('role')[0]['role']
+                    user.email = email
+                    user.save()
+                    approvedUser=ApprovedUsers(author=user,userid=userid,first_name=r_obj.values('first_name')[0]['first_name'],last_name=r_obj.values('last_name')[0]['last_name'],email=r_obj.values('email')[0]['email'],contact_no=r_obj.values('contact_no')[0]['contact_no'],whatsapp_no=r_obj.values('whatsapp_no')[0]['whatsapp_no'],role=r_obj.values('role')[0]['role'])
+                    approvedUser.save()
+                    r_obj.delete()
+                    messages.success(request, 'Successfully Approved!')
+                except:
+                    messages.error(request, 'Something went wrong!!!')
+        
         return render(request,'administrator/index.html')
     return render(request,'administrator/index.html')
 
