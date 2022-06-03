@@ -2,6 +2,7 @@ from django.core.mail import send_mail
 import random
 import string
 
+
 def mail(email,name,role,username,password):
     subject=f'Approved By Admin for your {role} role'
     body=f'{name} Your login userID is: {username} and password is: {password}'

@@ -51,6 +51,7 @@ def index(request):
         return render(request,'administrator/index.html')
     return render(request,'administrator/index.html')
 
+
 @api_view(['GET','POST'])
 def pending(request):
     if request.method=='GET':
