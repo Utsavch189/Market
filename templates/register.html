@@ -1,0 +1,50 @@
+{% extends 'Base.html' %}
+{% block title %} Register {% endblock title %}
+
+{% block body %}
+<div class="container py-4 px-5 my-4">
+    {% for message in messages %}
+    <div class="alert alert-success {% if message.tags == 'error' %} alert-danger {% endif %}" role="alert">
+        <strong>Message: </strong> {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+<form method="POST" action="/register/" name="form1">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="fname" class="form-label">First Name</label>
+        <input type="text" class="form-control" id="fname" name="fname" placeholder="First Name" required="required">
+    </div>
+    <div class="mb-3">
+        <label for="gurdian" class="form-label">Last Name</label>
+        <input type="text" class="form-control" id="lname" name="lname" placeholder="Last Name" required="required">
+    </div>
+
+    <div class="mb-3">
+        <label for="gurdian" class="form-label">Email</label>
+        <input type="text" class="form-control" id="email" name="email" placeholder="Email" required="required">
+    </div>
+
+    <div class="mb-3">
+        <label for="gurdian" class="form-label">Contact number</label>
+        <input type="text" class="form-control" id="cnum" name="cnum" placeholder="Contact number" required="required">
+    </div>
+
+    <div class="mb-3">
+        <label for="gurdian" class="form-label">WhatsApp number</label>
+        <input type="text" class="form-control" id="wnum" name="wnum" placeholder="WhatsApp number" required="required">
+    </div>
+
+    <div class="mb-3">
+        <label for="role" class="form-label">Select Your Role</label>
+        <select name="role" id="role" required>
+            <option value="None">Choose</option>
+            <option value="Manufacturer">Manufacturer</option>
+            <option value="Distributor">Distributor</option>
+            <option value="Retailer">Retailer</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary" value="register">Submit</button>
+</form> 
+</div>
+{% endblock body %}

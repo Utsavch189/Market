@@ -1,8 +1,49 @@
-{% extends 'Base.html' %}
-{% block title %} Home {% endblock title %}
+{% extends 'Base.html' %} {% block title %} Home {% endblock title %} {% block body %}
 
-{% block body %}
 
-<h1>hi anonymus</h1>
+
+{% if request.user.is_anonymous %}
+
+<div class="main">
+    <div class="container button">
+
+        <a href="register/" <button class="btn btn-primary p-3">Register</button></a>
+        <a href="login/"> <button class="btn btn-warning p-3">Login</button></a>
+
+    </div>
+
+
+
+</div>
+
+
+
+{% else %}
+
+{% if request.user.is_superuser %}
+
+<div class="main">
+    <div class="container button">
+
+       <h1>{{request.user.first_name}}</h1>
+
+    </div>
+</div>
+
+
+{% else %}
+
+<div class="main">
+    <div class="container button">
+
+       <h1>not admin</h1>
+
+    </div>
+</div>
+
+
+{% endif %}
+
+{% endif %}
 
 {% endblock body %}

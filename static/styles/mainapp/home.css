@@ -1,0 +1,17 @@
+.main {
+    height: 94vh;
+    width: 100%;
+    background-image: url('/static/image/home1.jpeg');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: space-evenly;
+}
