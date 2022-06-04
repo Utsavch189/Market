@@ -6,5 +6,6 @@ urlpatterns = [
     path('api/',pending),
     path('approve/',approve),
     path('approveusers/',approved,name='approveusers'),
-    path('setproducts/',setproducts,name='setproducts')
+    path('setproducts/',setproducts,name='setproducts'),
+    path('seeproducts/',setproduct),
 ]

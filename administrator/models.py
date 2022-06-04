@@ -19,7 +19,7 @@ class ApprovedUsers(models.Model):
 class SetProduct(models.Model):
     name=models.CharField(null=True,blank=True,max_length=500)
     price=models.CharField(null=True,blank=True,max_length=500)
-    description=models.CharField(null=True,blank=True,max_length=1500)
+    description=models.CharField(null=True,blank=True,max_length=5000)
 
-    def __str__(self) :
+    def __str__(self):
         return self.name

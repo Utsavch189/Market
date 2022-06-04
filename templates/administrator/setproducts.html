@@ -30,17 +30,25 @@
 
 </div>
 
-<div class="container py-4 px-5 my-4">
-    <h4 class="text-center">Added Product</h4>
-    <div class="card my-4" style="width: 18rem;">
-        <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+<h4 class="text-center my-2">Added Product</h4>
+<div class="container py-4 px-5  my-2">
 
+    <form action="" method="post">
+        {% csrf_token %}
+        <select name="pro" id="pro" class="px-3">
+    <option value="">None</option>
+    </select>
+        <div>
+            <button type="submit" class="btn btn-danger my-2" value="register">Remove Product</button>
         </div>
-    </div>
+
+    </form>
 
 </div>
+<div class="container py-4 px-5 my-2 d-flex justify-content-around " id="product" style="flex-wrap:wrap">
 
+
+
+</div>
+<script src="/static/scripts/administrator/product.js"></script>
 {% endblock body %}

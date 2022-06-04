@@ -93,12 +93,22 @@ def setproducts(request):
         name=request.POST.get('name')
         price=request.POST.get('price')
         desc=request.POST.get('desc')
-        product=SetProduct(name=name,price=price,description=desc)
-        try:
-            product.save()
-            messages.success(request, f'{name} is Successfully Added!')
-        except:
-            messages.error(request, 'Something went wrong!!!')
+        if name and price and desc: 
+            try:
+                product=SetProduct(name=name,price=price,description=desc)
+                product.save()
+                messages.success(request, f'{name} is Successfully Added!')
+            except:
+                messages.error(request, 'Something went wrong!!!')
+
+        val=request.POST.get('pro')
+        if val:
+            try:
+                obj=SetProduct.objects.filter(name=val)
+                obj.delete()
+                messages.success(request, f'{val} is Successfully Deleted!')
+            except:
+                messages.error(request, 'Something went wrong!!!')
         return render(request,'administrator/setproducts.html')
     return render(request,'administrator/setproducts.html')
 
@@ -159,6 +169,35 @@ def approve(request):
                             'contact':alls.values('contact_no')[i]['contact_no'],
                             'whatsapp':alls.values('whatsapp_no')[i]['whatsapp_no'],
                             'role':alls.values('role')[i]['role']
+                        }
+                        approveUsers.append(data)
+                    return Response(approveUsers)
+                return Response({'info':'no data'})
+            return Response({'info':'You have no permission!'})
+        return Response({'info':'You have no permission!'})
+    elif request.method=='POST':
+        return Response({'info':'Running'})
+    else:
+        return Response({'msg':'bad request','status':400})
+
+
+
+
+@api_view(['GET','POST'])
+def setproduct(request):
+    if request.method=='GET':
+        if request.user.is_authenticated:
+            approveUsers=[]
+            alls=SetProduct.objects.all()
+            if(request.user.last_name=='Admin'):
+                if alls.exists():
+                    for i in range(0,alls.count()):
+                        data={
+                            
+                            'name':alls.values('name')[i]['name'],
+                            'price':alls.values('price')[i]['price'],
+                            'desc':alls.values('description')[i]['description'],
+                           
                         }
                         approveUsers.append(data)
                     return Response(approveUsers)
