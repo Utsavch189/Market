@@ -2,7 +2,7 @@ get = () => {
 
     fetch(`${window.location.origin}/administrator/approve/`)
         .then(res => res.json())
-        .then(data => document.getElementById("dog").innerHTML = data.map((val, k) =>
+        .then(data => document.getElementById("dog").innerHTML = data.map((val, k) => {
 
             `<tr >
                     <td>${val['userid']}</td>
@@ -13,8 +13,8 @@ get = () => {
                     <td>${val['role']}</td>
 
                 </tr>   
-                `
-        ))
+        `
+        }))
         .catch(err => console.log(err))
 }
 get()
@@ -22,8 +22,9 @@ get()
 dropdown = () => {
     fetch(`${window.location.origin}/administrator/approve/`)
         .then(res => res.json())
-        .then(data => document.getElementById('role').innerHTML = data.map((val, k) =>
-                `<option value=${val['userid']}>${val['userid']}</option>`
+        .then(data => document.getElementById('role').innerHTML = data.map((val, k) => {
+                    `<option value=${val['userid']}>${val['userid']}</option>`
+                }
 
             )
 

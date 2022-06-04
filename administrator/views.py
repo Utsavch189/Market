@@ -44,7 +44,7 @@ def index(request):
                     approvedUser=ApprovedUsers(author=user,userid=userid,first_name=r_obj.values('first_name')[0]['first_name'],last_name=r_obj.values('last_name')[0]['last_name'],email=r_obj.values('email')[0]['email'],contact_no=r_obj.values('contact_no')[0]['contact_no'],whatsapp_no=r_obj.values('whatsapp_no')[0]['whatsapp_no'],role=r_obj.values('role')[0]['role'])
                     approvedUser.save()
                     r_obj.delete()
-                    messages.success(request, 'Successfully Approved!')
+                    messages.success(request, f'{name} is Successfully Approved!')
                 except:
                     messages.error(request, 'Something went wrong!!!')
         
@@ -58,7 +58,12 @@ def index(request):
 @login_required(login_url='http://127.0.0.1:8000/login/')
 def approved(request):
     if request.method=='GET':
-        return render(request,'administrator/approve.html')
+        dict={
+            'manufacturer':ApprovedUsers.objects.filter(role='Manufacturer').count(),
+            'distributor':ApprovedUsers.objects.filter(role='Distributor').count(),
+            'retailer':ApprovedUsers.objects.filter(role='Retailer').count(),
+        }
+        return render(request,'administrator/approve.html',{'dict':dict})
 
     elif request.method=='POST':
         val=request.POST.get('role')
