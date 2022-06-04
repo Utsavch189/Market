@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from mainapp.models import Register
 import json
-from .models import ApprovedUsers
+from .models import ApprovedUsers,SetProduct
 from django.contrib.auth.models import User
 from .user import mail,password,useID
 
@@ -90,6 +90,15 @@ def setproducts(request):
         
         return render(request,'administrator/setproducts.html')
     elif request.method=='POST':
+        name=request.POST.get('name')
+        price=request.POST.get('price')
+        desc=request.POST.get('desc')
+        product=SetProduct(name=name,price=price,description=desc)
+        try:
+            product.save()
+            messages.success(request, f'{name} is Successfully Added!')
+        except:
+            messages.error(request, 'Something went wrong!!!')
         return render(request,'administrator/setproducts.html')
     return render(request,'administrator/setproducts.html')
 
