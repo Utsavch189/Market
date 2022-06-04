@@ -22,7 +22,7 @@
 
   {% else %}
 
-  {% if request.user.is_superuser %}
+  {% ifequal request.user.last_name "Admin" %}
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
       <a class="navbar-brand" href="#">Navbar</a>
@@ -112,5 +112,5 @@
 </nav>
   {% endifequal %}
   {% endifequal %}
-{% endif %}
+{% endifequal %}
 {% endif %}

@@ -82,27 +82,28 @@ def approved(request):
 @api_view(['GET','POST'])
 def pending(request):
     if request.method=='GET':
-        if request.user.is_superuser:
+        if request.user.is_authenticated:
             users=[]
             alls=Register.objects.all()
-
+            if(request.user.last_name=='Admin'):
         
-            if alls.exists():
-                for i in range(0,alls.count()):
-                    data={
-                        'number':alls.values('number')[i]['number'],
-                        'name':alls.values('first_name')[i]['first_name']+' '+alls.values('last_name')[i]['last_name'],
-                        'email':alls.values('email')[i]['email'],
-                        'contact':alls.values('contact_no')[i]['contact_no'],
-                        'whatsapp':alls.values('whatsapp_no')[i]['whatsapp_no'],
-                        'role':alls.values('role')[i]['role']
-                    }
+                if alls.exists():
+                    for i in range(0,alls.count()):
+                        data={
+                            'number':alls.values('number')[i]['number'],
+                            'name':alls.values('first_name')[i]['first_name']+' '+alls.values('last_name')[i]['last_name'],
+                            'email':alls.values('email')[i]['email'],
+                            'contact':alls.values('contact_no')[i]['contact_no'],
+                            'whatsapp':alls.values('whatsapp_no')[i]['whatsapp_no'],
+                            'role':alls.values('role')[i]['role']
+                        }
 
         
        
-                    users.append(data)
-                return Response(users)
-            return Response({'info':'no data'})
+                        users.append(data)
+                    return Response(users)
+                return Response({'info':'no data'})
+            return Response({'info':'You have no permission!'})
         return Response({'info':'You have no permission!'})
     elif request.method=='POST':
         return Response({'info':'Running'})
@@ -117,22 +118,24 @@ def pending(request):
 @api_view(['GET','POST'])
 def approve(request):
     if request.method=='GET':
-        if request.user.is_superuser:
+        if request.user.is_authenticated:
             approveUsers=[]
             alls=ApprovedUsers.objects.all()
-            if alls.exists():
-                for i in range(0,alls.count()):
-                    data={
-                        'userid':alls.values('userid')[i]['userid'],
-                        'name':alls.values('first_name')[i]['first_name']+' '+alls.values('last_name')[i]['last_name'],
-                        'email':alls.values('email')[i]['email'],
-                        'contact':alls.values('contact_no')[i]['contact_no'],
-                        'whatsapp':alls.values('whatsapp_no')[i]['whatsapp_no'],
-                        'role':alls.values('role')[i]['role']
-                    }
-                    approveUsers.append(data)
-                return Response(approveUsers)
-            return Response({'info':'no data'})
+            if(request.user.last_name=='Admin'):
+                if alls.exists():
+                    for i in range(0,alls.count()):
+                        data={
+                            'userid':alls.values('userid')[i]['userid'],
+                            'name':alls.values('first_name')[i]['first_name']+' '+alls.values('last_name')[i]['last_name'],
+                            'email':alls.values('email')[i]['email'],
+                            'contact':alls.values('contact_no')[i]['contact_no'],
+                            'whatsapp':alls.values('whatsapp_no')[i]['whatsapp_no'],
+                            'role':alls.values('role')[i]['role']
+                        }
+                        approveUsers.append(data)
+                    return Response(approveUsers)
+                return Response({'info':'no data'})
+            return Response({'info':'You have no permission!'})
         return Response({'info':'You have no permission!'})
     elif request.method=='POST':
         return Response({'info':'Running'})
