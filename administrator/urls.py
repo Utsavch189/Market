@@ -5,5 +5,6 @@ urlpatterns = [
     path('pendings/',index,name='pendings'),
     path('api/',pending),
     path('approve/',approve),
-    path('approveusers/',approved,name='approveusers')
+    path('approveusers/',approved,name='approveusers'),
+    path('setproducts/',setproducts,name='setproducts')
 ]

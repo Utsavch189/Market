@@ -84,6 +84,20 @@ def approved(request):
 
 
 
+@login_required(login_url='http://127.0.0.1:8000/login/')
+def setproducts(request):
+    if request.method=='GET':
+        
+        return render(request,'administrator/setproducts.html')
+    elif request.method=='POST':
+        return render(request,'administrator/setproducts.html')
+    return render(request,'administrator/setproducts.html')
+
+
+
+
+
+
 @api_view(['GET','POST'])
 def pending(request):
     if request.method=='GET':
