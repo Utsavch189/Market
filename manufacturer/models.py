@@ -24,3 +24,16 @@ class CreatedProducts(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Distribute(models.Model):
+    user=models.CharField(null=True,blank=True,max_length=500)
+    product_id=models.CharField(null=True,blank=True,max_length=500)
+    take_from=models.CharField(null=True,blank=True,max_length=500)
+    product_name=models.CharField(null=True,blank=True,max_length=500)
+    product_quantity=models.CharField(null=True,blank=True,max_length=500)
+    total_price=models.CharField(null=True,blank=True,max_length=500)
+    date=models.DateField(date.today())
+
+    def __str__(self):
+        return self.user + ' '+'('+self.product_name+')'

@@ -12,7 +12,7 @@
 
         <form action="" method="post">
             {% csrf_token %}
-
+            <label for="number" class="form-label">Select Products:</label>
             <select name="pro" id="pro" class="px-3">
     <option value="">None</option>
     </select>
@@ -35,7 +35,7 @@
                 <tr>
                     <th>Product ID</th>
                     <th>Product Name</th>
-                    <th>Product Price</th>
+                    <th>Product Price(Per Product)</th>
                     <th>Product Description</th>
                     <th>Total Products in Stock</th>
 
