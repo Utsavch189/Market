@@ -5,7 +5,7 @@ from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from mainapp.models import Register
-from .models import ApprovedUsers,SetProduct
+from .models import ApprovedUsers
 from django.contrib.auth.models import User
 from .user import mail,password,useID
 
@@ -83,35 +83,6 @@ def approved(request):
 
 
 
-@login_required(login_url='http://127.0.0.1:8000/login/')
-def setproducts(request):
-    if request.method=='GET':
-        
-        return render(request,'administrator/setproducts.html')
-    elif request.method=='POST':
-        name=request.POST.get('name')
-        price=request.POST.get('price')
-        desc=request.POST.get('desc')
-        if name and price and desc: 
-            try:
-                product=SetProduct(name=name,price=price,description=desc)
-                product.save()
-                messages.success(request, f'{name} is Successfully Added!')
-            except:
-                messages.error(request, 'Something went wrong!!!')
-
-        val=request.POST.get('pro')
-        if val:
-            try:
-                obj=SetProduct.objects.filter(name=val)
-                obj.delete()
-                messages.success(request, f'{val} is Successfully Deleted!')
-            except:
-                messages.error(request, 'Something went wrong!!!')
-        return render(request,'administrator/setproducts.html')
-    return render(request,'administrator/setproducts.html')
-
-
 
 
 
@@ -182,28 +153,3 @@ def approve(request):
 
 
 
-@api_view(['GET','POST'])
-def setproduct(request):
-    if request.method=='GET':
-        
-            prod=[]
-            alls=SetProduct.objects.all()
-            
-            if alls.exists():
-                    for i in range(0,alls.count()):
-                        data={
-                            
-                            'name':alls.values('name')[i]['name'],
-                            'price':alls.values('price')[i]['price'],
-                            'desc':alls.values('description')[i]['description'],
-                           
-                        }
-                        prod.append(data)
-                    return Response(prod)
-            return Response({'info':'no data'})
-            
-        
-    elif request.method=='POST':
-        return Response({'info':'Running'})
-    else:
-        return Response({'msg':'bad request','status':400})

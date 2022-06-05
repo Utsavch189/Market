@@ -1,4 +1,4 @@
-{% extends 'Base.html' %} {% block title %} Approve {% endblock title %} {% block body %}
+{% extends 'Base.html' %} {% block title %} Add Products {% endblock title %} {% block body %}
 
 <div class="container py-4 px-5 my-4">
     {% for message in messages %}
@@ -30,7 +30,7 @@
 
 </div>
 
-<h4 class="text-center my-2">Added Product</h4>
+<h4 class="text-center my-2">Added Products Which will be manufactured:</h4>
 <div class="container py-4 px-5  my-2">
 
     <form action="" method="post">
@@ -50,5 +50,5 @@
 
 
 </div>
-<script src="/static/scripts/administrator/product.js"></script>
+<script src="/static/scripts/manufacturer/product.js"></script>
 {% endblock body %}

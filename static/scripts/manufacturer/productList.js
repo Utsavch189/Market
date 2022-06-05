@@ -1,6 +1,6 @@
 get = () => {
 
-    fetch(`${window.location.origin}/administrator/seeproducts/`)
+    fetch(`${window.location.origin}/manufacturer/seeproducts/`)
         .then(res => res.json())
         .then(data =>
             document.getElementById("production").innerHTML = data.map((val, k) =>
@@ -15,7 +15,7 @@ get = () => {
 
             )
         )
-        .catch(err => console.log(err))
+
 
 }
 get()

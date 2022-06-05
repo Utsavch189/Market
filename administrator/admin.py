@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import ApprovedUsers,SetProduct
+from .models import ApprovedUsers
 
 admin.site.register(ApprovedUsers)
-admin.site.register(SetProduct)
+

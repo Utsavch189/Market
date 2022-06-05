@@ -16,10 +16,3 @@ class ApprovedUsers(models.Model):
         return self.first_name + ' '+ self.last_name
 
 
-class SetProduct(models.Model):
-    name=models.CharField(null=True,blank=True,max_length=500)
-    price=models.CharField(null=True,blank=True,max_length=500)
-    description=models.CharField(null=True,blank=True,max_length=5000)
-
-    def __str__(self):
-        return self.name
