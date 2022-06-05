@@ -5,7 +5,6 @@ from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from mainapp.models import Register
-import json
 from .models import ApprovedUsers,SetProduct
 from django.contrib.auth.models import User
 from .user import mail,password,useID
@@ -159,8 +158,8 @@ def approve(request):
         if request.user.is_authenticated:
             approveUsers=[]
             alls=ApprovedUsers.objects.all()
-            if(request.user.last_name=='Admin'):
-                if alls.exists():
+            
+            if alls.exists():
                     for i in range(0,alls.count()):
                         data={
                             'userid':alls.values('userid')[i]['userid'],
@@ -172,8 +171,8 @@ def approve(request):
                         }
                         approveUsers.append(data)
                     return Response(approveUsers)
-                return Response({'info':'no data'})
-            return Response({'info':'You have no permission!'})
+            return Response({'info':'no data'})
+            
         return Response({'info':'You have no permission!'})
     elif request.method=='POST':
         return Response({'info':'Running'})
@@ -186,11 +185,11 @@ def approve(request):
 @api_view(['GET','POST'])
 def setproduct(request):
     if request.method=='GET':
-        if request.user.is_authenticated:
-            approveUsers=[]
+        
+            prod=[]
             alls=SetProduct.objects.all()
-            if(request.user.last_name=='Admin'):
-                if alls.exists():
+            
+            if alls.exists():
                     for i in range(0,alls.count()):
                         data={
                             
@@ -199,11 +198,11 @@ def setproduct(request):
                             'desc':alls.values('description')[i]['description'],
                            
                         }
-                        approveUsers.append(data)
-                    return Response(approveUsers)
-                return Response({'info':'no data'})
-            return Response({'info':'You have no permission!'})
-        return Response({'info':'You have no permission!'})
+                        prod.append(data)
+                    return Response(prod)
+            return Response({'info':'no data'})
+            
+        
     elif request.method=='POST':
         return Response({'info':'Running'})
     else:

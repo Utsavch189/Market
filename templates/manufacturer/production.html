@@ -1,0 +1,23 @@
+{% extends 'Base.html' %} {% block title %} Production {% endblock title %} {% block body %}
+
+<section class="bg-light p-5 w-100">
+    <h3 class="pb-4 my-2">Products Which Will be manufactured:</h3>
+
+    <div class="table-responsive table table-bordered">
+        <table class="table bg-white" id="example-table">
+            <thead class="bg-dark text-light">
+                <tr>
+                    <th>Product Name</th>
+                    <th>Product Price</th>
+                    <th>Product Description</th>
+
+
+                </tr>
+            </thead>
+            <tbody id="production"></tbody>
+        </table>
+    </div>
+</section>
+<script src="/static/scripts/manufacturer/productList.js">
+</script>
+{% endblock body %}
