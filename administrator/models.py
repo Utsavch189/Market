@@ -13,6 +13,6 @@ class ApprovedUsers(models.Model):
     role=models.CharField(null=True,blank=True,max_length=500)
 
     def __str__(self):
-        return self.first_name + ' '+ self.last_name
+        return self.first_name + ' '+ self.last_name+'('+self.role+')'
 
 

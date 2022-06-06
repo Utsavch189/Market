@@ -8,4 +8,5 @@ urlpatterns = [
     path('seeproducts/',setproduct),
     path('manufacturedproducts/',manufacturedproducts),
     path('distribute/',distribute),
+    path('distributiondetails/',distributiondetails),
 ]

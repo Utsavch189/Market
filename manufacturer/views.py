@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from administrator.models import ApprovedUsers
 from .models import CreatedProducts,SetProduct,Distribute
-from .product_id import Product
+from .product_iddd import Product
 
 
 @login_required(login_url='http://127.0.0.1:8000/login/')
@@ -19,14 +19,16 @@ def index(request):
         number=request.POST.get('number')
         if product and number:
              try:
-                obj=SetProduct.objects.filter(name=product)
+                main_obj=SetProduct.objects.filter(manufacturer_id=request.user.username)
+                obj=main_obj.filter(name=product)
                 
                 if obj.exists():
-                    r_obj=CreatedProducts.objects.filter(name=product)
+                    ann_obj=CreatedProducts.objects.filter(manufacturer_id=request.user.username)
+                    r_obj=ann_obj.filter(name=product)
                     if not r_obj.exists():
                         price=obj.values('price')[0]['price']
                         desc=obj.values('description')[0]['description']
-                        newproduct=CreatedProducts(Product_id=Product(product),name=product,price=price,description=desc,production_no=number,production_date=date.today())
+                        newproduct=CreatedProducts(manufacturer_id=request.user.username,Product_id=Product(product),name=product,price=price,description=desc,production_no=number,production_date=date.today())
                         newproduct.save()
                         messages.success(request, f'Successfully Create the first entry for {product} and entered production number')
                     else:
@@ -59,11 +61,13 @@ def setproducts(request):
         name=request.POST.get('name')
         price=request.POST.get('price')
         desc=request.POST.get('desc')
+        
         if name and price and desc: 
-            my_obj=SetProduct.objects.filter(name=name)
+            main_obj=SetProduct.objects.filter(manufacturer_id=request.user.username)
+            my_obj=main_obj.filter(name=name)
             if not my_obj.exists():
                 try:
-                    product=SetProduct(name=name,price=price,description=desc)
+                    product=SetProduct(manufacturer_id=request.user.username,name=name,price=price,description=desc)
                     product.save()
                     messages.success(request, f'{name} is Successfully Added!')
                 except:
@@ -74,7 +78,8 @@ def setproducts(request):
         val=request.POST.get('pro')
         if val:
             try:
-                obj=SetProduct.objects.filter(name=val)
+                main_obj=SetProduct.objects.filter(manufacturer_id=request.user.username)
+                obj=main_obj.filter(name=val)
                 obj.delete()
                 messages.success(request, f'{val} is Successfully Removed!')
             except:
@@ -94,29 +99,44 @@ def distribution(request):
         product=request.POST.get('pro')
         user=request.POST.get('users')
         number=request.POST.get('number')
-        manufacturer=(request.user.first_name)
+        manufacturer=(request.user.username)
         if product and user and number:
             prod=CreatedProducts.objects.filter(name=product)
             prod_id=prod.values('Product_id')[0]['Product_id']
             price=int(prod.values('price')[0]['price'])
-            obj=Distribute.objects.filter(user=user)
+            an_obj=Distribute.objects.filter(manufacturer_id=manufacturer)
+            obj=an_obj.filter(user=user)
             r_obj=obj.filter(product_name=product)
-            an_obj=Distribute.objects.filter(take_from=manufacturer)
+           
             my_obj=ApprovedUsers.objects.filter(userid=user)
-            take_from=obj.filter(take_from=manufacturer)
+            
             username=my_obj.values('first_name')[0]['first_name']+' '+my_obj.values('last_name')[0]['last_name']
             try:
-                if not (obj.exists() and r_obj.exists() and an_obj.exists()):
+                if not (obj.exists() and r_obj.exists()):
                 
-                
-                    x=Distribute(user=user,product_id=prod_id,take_from=request.user.first_name,product_name=product,product_quantity=number,total_price=str(price*int(number)),date=date.today())
-                    x.save()
-                    messages.success(request, f'{product} is successfully distributed to {username}!')
+                    ann_obj=CreatedProducts.objects.filter(manufacturer_id=request.user.username)
+                    r_obj=ann_obj.filter(name=product)
+                    pre_stock=r_obj.values('production_no')[0]['production_no']
+                    remain_stock=str(int(pre_stock)-int(number))
+                    if int(remain_stock)>=0:
+                        x=Distribute(user=user,product_id=prod_id,manufacturer_id=manufacturer,product_name=product,product_quantity=number,total_price=str(price*int(number)),date=date.today())
+                        x.save()
+                        r_obj.update(production_no=remain_stock)
+                        messages.success(request, f'{product} is successfully distributed to {username}!')
+                    else:
+                        messages.error(request, 'Do not have enough stock!!!')
                   
                 else:
-              
-                    r_obj.update(product_quantity=number,total_price=str(price*int(number)),date=date.today())
-                    messages.success(request, f'{product} has been successfully updated for {username}!')
+                    ann_obj=CreatedProducts.objects.filter(manufacturer_id=request.user.username)
+                    r_obj=ann_obj.filter(name=product)
+                    pre_stock=r_obj.values('production_no')[0]['production_no']
+                    remain_stock=str(int(pre_stock)-int(number))
+                    if int(remain_stock)>=0:
+                        r_obj.update(product_quantity=number,total_price=str(price*int(number)),date=date.today())
+                        messages.success(request, f'{product} has been successfully updated for {username}!')
+                        r_obj.update(production_no=remain_stock)
+                    else:
+                        messages.error(request, 'Do not have enough stock!!!')
             except:
                 messages.error(request, 'Something went wrong!!!')
 
@@ -142,7 +162,8 @@ def setproduct(request):
     if request.method=='GET':
         
             prod=[]
-            alls=SetProduct.objects.all()
+            alls=SetProduct.objects.filter(manufacturer_id=request.user.username)
+            
             
             if alls.exists():
                     for i in range(0,alls.count()):
@@ -170,7 +191,8 @@ def manufacturedproducts(request):
     if request.method=='GET':
         
             prod=[]
-            alls=CreatedProducts.objects.all()
+            alls=CreatedProducts.objects.filter(manufacturer_id=request.user.username)
+
             
             if alls.exists():
                     for i in range(0,alls.count()):
@@ -210,6 +232,34 @@ def distribute(request):
                 distributors.append(data)
         return Response(distributors)
     elif request.method=='POST':
+        return Response({'info':'Running'})
+    else:
+        return Response({'msg':'bad request','status':400})
+
+
+
+@api_view(['GET','POST'])
+def distributiondetails(request):
+    if request.method=='GET':
+        distributes=Distribute.objects.filter(manufacturer_id=request.user.username)
+        dist=[]
+        if distributes.exists():
+            for i in range(0,distributes.count()):
+                data={
+                    'id':distributes.values('user')[i]['user'],
+                    'product_id':distributes.values('product_id')[i]['product_id'],
+                    'product_name':distributes.values('product_name')[i]['product_name'],
+                    'product_quantity':distributes.values('product_quantity')[i]['product_quantity'],
+                    'total_price':distributes.values('total_price')[i]['total_price']
+                }
+                dist.append(data)
+       
+        return Response(dist)
+    elif request.method=='POST':
+        msg=(request.data['msg'])
+        if msg:
+            obj=Distribute.objects.filter(manufacturer_id=request.user.username)
+            obj.delete()
         return Response({'info':'Running'})
     else:
         return Response({'msg':'bad request','status':400})

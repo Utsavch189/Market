@@ -51,5 +51,44 @@
         </table>
     </div>
 </section>
+<section class="bg-light p-5 w-100 my-2">
+
+    <h3 class="pb-4 my-2">Distribution Details:</h3>
+    <button class="btn btn-danger" id="records">Delete All Records</button>
+    <div class="table-responsive table table-bordered my-2">
+        <table class="table bg-white" id="example-table">
+            <thead class="bg-dark text-light">
+                <tr>
+                    <th>Distributor ID</th>
+                    <th>Product ID</th>
+                    <th>Product Name</th>
+                    <th>Received Product Quantity</th>
+                    <th>Total Price</th>
+
+
+                </tr>
+            </thead>
+            <tbody id="distributiondetails"></tbody>
+        </table>
+    </div>
+</section>
 <script src="/static/scripts/manufacturer/distribution.js"></script>
+<script src="/static/scripts/manufacturer/distributiondetails.js"></script>
+<script>
+    document.getElementById('records').onclick = () => {
+        let rtr = confirm("Are you sure to Delete all the Records?");
+        if (rtr === false) e.preventDefault()
+        fetch(`${window.location.origin}/manufacturer/distributiondetails/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                'msg': 'True'
+            }),
+        })
+    }
+</script>
 {% endblock body %}
