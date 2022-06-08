@@ -1,0 +1,90 @@
+{% extends 'Base.html' %} {% block title %} Distribute {% endblock title %} {% block body %}
+
+
+<section class="bg-light p-5 w-100" id="entirePage">
+    {% for message in messages %}
+    <div class="alert alert-success {% if message.tags == 'error' %} alert-danger {% endif %}" role="alert">
+        <strong>Message: </strong> {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    <h4 class="text-center my-3">Give Products</h4>
+    <div class="container  my-4 d-flex w-20">
+
+        <form action="" method="post">
+            {% csrf_token %}
+            <label for="number" class="form-label">Select Products:</label>
+            <select name="pro" id="pro" class="px-3">
+    <option value="">None</option>
+    </select>
+            <label for="number" class="form-label">Select Retailer:</label>
+            <select name="users" id="users" class="px-3">
+        <option value="">None</option>
+        </select>
+
+            <div class="conatiner input my-2">
+                <label for="number" class="form-label">How Many Number of Products:</label>
+                <input type="text" class="form-control" id="number" name="number" placeholder="Number of products" required="required">
+            </div>
+
+            <button type="submit" class="btn btn-primary my-2" value="register">Give</button>
+
+
+        </form>
+
+    </div>
+    <h3 class="pb-4 my-2">Retailers:</h3>
+
+    <div class="table-responsive table table-bordered">
+        <table class="table bg-white" id="example-table">
+            <thead class="bg-dark text-light">
+                <tr>
+                    <th>User ID</th>
+                    <th>User Name</th>
+                    <th>Contact No</th>
+                    <th>WhatsApp No</th>
+                    <th>Email</th>
+
+
+                </tr>
+            </thead>
+            <tbody id="retailers"></tbody>
+        </table>
+    </div>
+</section>
+<script src="/static/scripts/distributor/getretailer.js"></script>
+<script>
+    let list = new Set();
+    let item = []
+    dropdown = () => {
+        fetch(`${window.location.origin}/distributor/getretailers/`)
+            .then(res => res.json())
+            .then(data => document.getElementById('users').innerHTML = data.map((val, k) =>
+                    `<option value=${val['userid']}>${val['userid']}</option>`
+
+                )
+
+
+
+            )
+
+        fetch(`${window.location.origin}/distributor/getproducts/`)
+            .then(res => res.json())
+            .then(data => {
+                for (let i = 0; i < data.length; i++) {
+                    list.add(data[i]['p_name'])
+                }
+                list.forEach(function(value) {
+                    item.push(value)
+                })
+                document.getElementById('pro').innerHTML = item.map((val, k) =>
+                    `<option value=${val}>${val}</option>`
+                )
+            })
+
+
+
+    }
+    dropdown()
+</script>
+{% endblock body %}

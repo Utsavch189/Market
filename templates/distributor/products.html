@@ -1,0 +1,32 @@
+{% extends 'Base.html' %} {% block title %} Products {% endblock title %} {% block body %}
+
+<section class="bg-light p-5 w-100">
+    {% for message in messages %}
+    <div class="alert alert-success {% if message.tags == 'error' %} alert-danger {% endif %}" role="alert">
+        <strong>Message: </strong> {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+
+    <h3 class="pb-4 my-2">Total Products in Stock</h3>
+
+    <div class="table-responsive table table-bordered">
+        <table class="table bg-white" id="example-table">
+            <thead class="bg-dark text-light">
+                <tr>
+                    <th>Product ID</th>
+                    <th>Product Name</th>
+                    <th>Product Price(Per Product)</th>
+                    <th>Product Description</th>
+                    <th>Total Products in Stock</th>
+                    <th>Take Form(Distributor)</th>
+
+                </tr>
+            </thead>
+            <tbody id="products"></tbody>
+        </table>
+    </div>
+</section>
+<script src="/static/scripts/distributor/products.js"></script>
+
+{% endblock body %}

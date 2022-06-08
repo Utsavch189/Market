@@ -119,7 +119,7 @@ def distribution(request):
                     pre_stock=r_obj.values('production_no')[0]['production_no']
                     remain_stock=str(int(pre_stock)-int(number))
                     if int(remain_stock)>=0:
-                        x=Distribute(user=user,product_id=prod_id,manufacturer_id=manufacturer,product_name=product,product_quantity=number,total_price=str(price*int(number)),date=date.today())
+                        x=Distribute(user=user,username=username,product_id=prod_id,manufacturer_id=manufacturer,product_name=product,product_quantity=number,total_price=str(price*int(number)),date=date.today())
                         x.save()
                         r_obj.update(production_no=remain_stock)
                         messages.success(request, f'{product} is successfully distributed to {username}!')
@@ -247,6 +247,7 @@ def distributiondetails(request):
             for i in range(0,distributes.count()):
                 data={
                     'id':distributes.values('user')[i]['user'],
+                    'users':distributes.values('username')[i]['username'],
                     'product_id':distributes.values('product_id')[i]['product_id'],
                     'product_name':distributes.values('product_name')[i]['product_name'],
                     'product_quantity':distributes.values('product_quantity')[i]['product_quantity'],

@@ -31,6 +31,7 @@ class CreatedProducts(models.Model):
 
 class Distribute(models.Model):
     user=models.CharField(null=True,blank=True,max_length=500)
+    username=models.CharField(null=True,blank=True,max_length=500)
     product_id=models.CharField(null=True,blank=True,max_length=500)
     manufacturer_id=models.CharField(null=True,blank=True,max_length=500)
     product_name=models.CharField(null=True,blank=True,max_length=500)
