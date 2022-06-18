@@ -1,17 +1,80 @@
+from datetime import datetime
 from django.contrib import messages
 from rest_framework.response import Response
 from django.shortcuts import redirect, render
 from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-from manufacturer.models import Distribute,SetProduct
+from manufacturer.models import CreatedProducts, Distribute,SetProduct
 from administrator.models import ApprovedUsers
 from .models import DistributeToRetailer,Stock
 # Create your views here.
 
 @login_required(login_url='http://127.0.0.1:8000/login/')
 def index(request):
+    if request.method=='GET':
+        return render(request,'distributor/distribute.html')
+    elif request.method=='POST':
+        product=request.POST.get('pro')
+        retailer=request.POST.get('users')
+        number=request.POST.get('number')
+
+        my_obj=ApprovedUsers.objects.filter(userid=retailer)
+        retailer_name=my_obj.values('first_name')[0]['first_name']+' '+my_obj.values('last_name')[0]['last_name']
+       
+        an_obj=CreatedProducts.objects.filter(name=product)
+        product_id=an_obj.values('Product_id')[0]['Product_id']
+        total_price=str(int(an_obj.values('price')[0]['price'])*int(number))
+
+
+        if product and retailer and number:
+         
+
+           r_stock=Stock.objects.filter(distributor=request.user.username)
+           stock=r_stock.filter(product_name=product)
+           pre_stock=stock.values('total')[0]['total']
+           remain_stock=int(int(pre_stock)-int(number))
+
+           obj=DistributeToRetailer.objects.filter(Retailer_id=retailer)
+           r_obj=obj.filter(distributor_id=request.user.username)
+           re_obj=r_obj.filter(product_name=product)
+           if not re_obj.exists():
+             if remain_stock>0:
+                try:
+                    x=DistributeToRetailer(Retailer_id=retailer,Retailer_username=retailer_name,product_id=product_id,product_name=product,product_quantity=number,total_price=total_price,distributor_id=request.user.username,date=datetime.today())
+                    x.save()
+                    
+                    stock.update(total=remain_stock)
+                    messages.success(request, f'{product} is successfully distributed to {retailer}!')
+                except:
+           
+                    messages.error(request, 'Something went wrong!!!')
+       
+             else:
+                messages.error(request, f'Stock for {product} is not enough!!!')
+       
+       
+           else:
+              if remain_stock>0:
+                re_obj.update(product_quantity=number)
+                re_obj.update(total_price=total_price)
+                stock.update(total=remain_stock)
+                messages.success(request, f'{product} quantity has been changed!')
+
+              else:
+                messages.error(request, f'Stock for {product} is not enough!!!')
+
+
+        return render(request,'distributor/distribute.html')
+
     return render(request,'distributor/distribute.html')
+
+
+@login_required(login_url='http://127.0.0.1:8000/login/')
+def retailerChanel(request):
+    return render(request,'distributor/retailerChanel.html')
+
+
 
 
 @login_required(login_url='http://127.0.0.1:8000/login/')
@@ -148,6 +211,36 @@ def gettotalproducts(request):
             
         
     elif request.method=='POST':
+        return Response({'info':'Running'})
+    else:
+        return Response({'msg':'bad request','status':400})
+
+
+
+
+@api_view(['GET','POST'])
+def distributiondetails(request):
+    if request.method=='GET':
+        distributes=DistributeToRetailer.objects.filter(distributor_id=request.user.username)
+        dist=[]
+        if distributes.exists():
+            for i in range(0,distributes.count()):
+                data={
+                    'id':distributes.values('Retailer_id')[i]['Retailer_id'],
+                    'users':distributes.values('Retailer_username')[i]['Retailer_username'],
+                    'product_id':distributes.values('product_id')[i]['product_id'],
+                    'product_name':distributes.values('product_name')[i]['product_name'],
+                    'product_quantity':distributes.values('product_quantity')[i]['product_quantity'],
+                    'total_price':distributes.values('total_price')[i]['total_price']
+                }
+                dist.append(data)
+       
+        return Response(dist)
+    elif request.method=='POST':
+        msg=(request.data['msg'])
+        if msg:
+            obj=Distribute.objects.filter(distributor_id=request.user.username)
+            obj.delete()
         return Response({'info':'Running'})
     else:
         return Response({'msg':'bad request','status':400})

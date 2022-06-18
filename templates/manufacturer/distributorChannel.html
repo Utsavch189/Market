@@ -1,0 +1,27 @@
+{% extends 'Base.html' %} {% block title %} Distribute {% endblock title %} {% block body %}
+
+<section class="bg-light p-5 w-100" id="entirePage">
+
+    <h3 class="pb-4 my-2">Distributors:</h3>
+
+    <div class="table-responsive table table-bordered">
+        <table class="table bg-white" id="example-table">
+            <thead class="bg-dark text-light">
+                <tr>
+                    <th>User ID</th>
+                    <th>User Name</th>
+                    <th>Contact No</th>
+                    <th>WhatsApp No</th>
+                    <th>Email</th>
+
+
+                </tr>
+            </thead>
+            <tbody id="distribution"></tbody>
+        </table>
+    </div>
+</section>
+
+<script src="/static/scripts/manufacturer/distribution.js"></script>
+
+{% endblock body %}

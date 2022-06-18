@@ -33,17 +33,21 @@
         </form>
 
     </div>
-    <h3 class="pb-4 my-2">Retailers:</h3>
+</section>
+<section class="bg-light p-5 w-100">
+    <h3 class="pb-4 my-2">Distribution History:</h3>
 
     <div class="table-responsive table table-bordered">
         <table class="table bg-white" id="example-table">
             <thead class="bg-dark text-light">
                 <tr>
-                    <th>User ID</th>
-                    <th>User Name</th>
-                    <th>Contact No</th>
-                    <th>WhatsApp No</th>
-                    <th>Email</th>
+                    <th>Retailer ID</th>
+                    <th>Retailer Name</th>
+                    <th>Product ID</th>
+                    <th>Product Name</th>
+                    <th>Received Product Quantity</th>
+                    <th>Total Price</th>
+
 
 
                 </tr>
@@ -51,8 +55,11 @@
             <tbody id="retailers"></tbody>
         </table>
     </div>
+    <div class="container d-flex justify-content-center">
+        <button class="btn btn-warning" id="print">Print</button>
+    </div>
 </section>
-<script src="/static/scripts/distributor/getretailer.js"></script>
+
 <script>
     let list = new Set();
     let item = []
@@ -86,5 +93,42 @@
 
     }
     dropdown()
+
+
+
+    document.getElementById('print').onclick = () => {
+        let a = document.getElementById('entirePage');
+        let b = document.getElementById('print');
+
+        a.style.display = 'none'
+        b.style.display = 'none'
+
+        window.print()
+    }
+
+
+
+
+    distdetails = () => {
+        fetch(`${window.location.origin}/distributor/distributiondetails/`)
+            .then(res => res.json())
+            .then(data => document.getElementById("retailers").innerHTML = data.map((val, k) =>
+
+                `<tr >
+                    <td>${val['id']}</td>
+                    <td>${val['users']}</td>
+                    <td>${val['product_id']}</td>
+                    <td>${val['product_name']}</td>
+                    <td>${val['product_quantity']}</td>
+                    <td>${val['total_price']}</td>
+    
+                </tr>   
+                `
+            ))
+            .catch(err => console.log(err))
+
+
+    }
+    distdetails()
 </script>
 {% endblock body %}
