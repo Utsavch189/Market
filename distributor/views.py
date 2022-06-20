@@ -24,7 +24,7 @@ def index(request):
        
         an_obj=CreatedProducts.objects.filter(name=product)
         product_id=an_obj.values('Product_id')[0]['Product_id']
-        total_price=str(int(an_obj.values('price')[0]['price'])*int(number))
+        price=str(int(an_obj.values('price')[0]['price']))
 
 
         if product and retailer and number:
@@ -41,7 +41,7 @@ def index(request):
            if not re_obj.exists():
              if remain_stock>0:
                 try:
-                    x=DistributeToRetailer(Retailer_id=retailer,Retailer_username=retailer_name,product_id=product_id,product_name=product,product_quantity=number,total_price=total_price,distributor_id=request.user.username,calculation_status=False,date=datetime.today())
+                    x=DistributeToRetailer(Retailer_id=retailer,Retailer_username=retailer_name,product_id=product_id,product_name=product,product_quantity=number,total_price=str(int(price)*int(number)),distributor_id=request.user.username,calculation_status=False,date=datetime.today())
                     x.save()
                     
                     stock.update(total=remain_stock)
@@ -56,8 +56,10 @@ def index(request):
        
            else:
               if remain_stock>0:
-                re_obj.update(product_quantity=number)
-                re_obj.update(total_price=total_price)
+                val=re_obj.values('product_quantity')[0]['product_quantity']
+                new_total=int(val)+int(number)
+                re_obj.update(product_quantity=str(new_total))
+                re_obj.update(total_price=str(new_total*int(price)))
                 stock.update(total=remain_stock)
                 messages.success(request, f'{product} quantity has been changed!')
 

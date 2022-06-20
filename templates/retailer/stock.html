@@ -48,7 +48,7 @@
                     <th>Product Price(Per Product)</th>
                     <th>Product Description</th>
                     <th>Total Products in Stock</th>
-                    <th>Take Form(Manufacturer)</th>
+                    <th>Take Form(Distributor)</th>
                     <th>Received Date</th>
                 </tr>
             </thead>
@@ -60,7 +60,7 @@
 <script>
     get = () => {
 
-        fetch(`${window.location.origin}/distributor/getproducts/`)
+        fetch(`${window.location.origin}/retailer/getproducts/`)
             .then(res => res.json())
             .then(data => document.getElementById("products").innerHTML = data.map((val, k) =>
 
@@ -89,7 +89,7 @@
     get()
 
     stock = () => {
-        fetch(`${window.location.origin}/distributor/gettotalproducts/`)
+        fetch(`${window.location.origin}/retailer/gettotalproducts/`)
             .then(res => res.json())
             .then(data => document.getElementById("stocks").innerHTML = data.map((val, k) =>
 
