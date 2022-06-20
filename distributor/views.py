@@ -39,7 +39,7 @@ def index(request):
            r_obj=obj.filter(distributor_id=request.user.username)
            re_obj=r_obj.filter(product_name=product)
            if not re_obj.exists():
-             if remain_stock>0:
+             if remain_stock>=0:
                 try:
                     x=DistributeToRetailer(Retailer_id=retailer,Retailer_username=retailer_name,product_id=product_id,product_name=product,product_quantity=number,total_price=str(int(price)*int(number)),distributor_id=request.user.username,calculation_status=False,date=datetime.today())
                     x.save()
@@ -55,7 +55,7 @@ def index(request):
        
        
            else:
-              if remain_stock>0:
+              if remain_stock>=0:
                 val=re_obj.values('product_quantity')[0]['product_quantity']
                 new_total=int(val)+int(number)
                 re_obj.update(product_quantity=str(new_total))

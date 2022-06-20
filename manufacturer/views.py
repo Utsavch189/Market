@@ -146,8 +146,10 @@ def distribution(request):
                     rr_obj=ann_obj.filter(name=product)
                     pre_stock=rr_obj.values('production_no')[0]['production_no']
                     remain_stock=str(int(pre_stock)-int(number))
+                    val=r_obj.values('product_quantity')[0]['product_quantity']
+                    new_total=int(val)+int(number)
                     if int(remain_stock)>=0:
-                        r_obj.update(product_quantity=number,total_price=str(price*int(number)),date=date.today())
+                        r_obj.update(product_quantity=str(new_total),total_price=str(price*int(new_total)))
                         messages.success(request, f'{product} has been successfully updated for {username}!')
                         rr_obj.update(production_no=remain_stock)
                     else:
