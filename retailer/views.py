@@ -97,7 +97,7 @@ def sell(request):
             pre_stock=stock.values('total')[0]['total']
             remain_stock=int(int(pre_stock)-int(number))
             if not pro.exists():
-                if remain_stock>0:
+                if remain_stock>=0:
                  try:
                     x=DistributeToCustomer(Retailer_id=request.user.username,Retailer_username=str(request.user.first_name)+str(request.user.last_name),product_id=product_id,product_name=product,product_quantity=number,total_price=str(int(price)*int(number)),date=date.today())
                     x.save()
@@ -110,7 +110,7 @@ def sell(request):
                 else:
                     messages.error(request, f'Stock for {product} is not enough!!!')
             else:
-             if remain_stock>0:
+             if remain_stock>=0:
                 val=pro.values('product_quantity')[0]['product_quantity']
                 new_total=int(val)+int(number)
                 pro.update(product_quantity=str(new_total))
