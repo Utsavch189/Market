@@ -41,7 +41,7 @@ def index(request):
            if not re_obj.exists():
              if remain_stock>0:
                 try:
-                    x=DistributeToRetailer(Retailer_id=retailer,Retailer_username=retailer_name,product_id=product_id,product_name=product,product_quantity=number,total_price=total_price,distributor_id=request.user.username,date=datetime.today())
+                    x=DistributeToRetailer(Retailer_id=retailer,Retailer_username=retailer_name,product_id=product_id,product_name=product,product_quantity=number,total_price=total_price,distributor_id=request.user.username,calculation_status=False,date=datetime.today())
                     x.save()
                     
                     stock.update(total=remain_stock)
@@ -80,42 +80,61 @@ def retailerChanel(request):
 @login_required(login_url='http://127.0.0.1:8000/login/')
 def products(request):
     if request.method=='GET':
-          
-        listt=[]
+        pro=set()
+
+        my_stock=Stock.objects.filter(distributor=request.user.username)
+        
+
+        my_obj=Distribute.objects.filter(user=request.user.username)
+        
+        for i in range(0,my_obj.count()):
+            pro.add(my_obj.values('product_id')[i]['product_id'])
+           
         total=0
-        a=set()
+        total1=0
+        listt=list(pro) 
         
-        obj=Distribute.objects.filter(user=request.user.username)
-        if obj.exists():
-            for i in range(0,obj.count()):
-               listt.append(obj.values('product_name')[i]['product_name'])
-        
-            dict_of_counts = {item:listt.count(item) for item in listt}
-            for i in range(0,len(listt)):
-                a.add(listt[i])
+        for i in listt:
+            c0=my_obj.filter(product_id=i)
+            c00=c0.filter(calculation_status=False)
+            
+            c=c00.count()
+            
+            obj=CreatedProducts.objects.filter(Product_id=i)
+            pro_name=obj.values('name')[0]['name']
+            pro_price=obj.values('price')[0]['price']
+            pro_desc=obj.values('description')[0]['description']
 
+            if c>1:
+                
+                for j in range(0,c):
 
-            for i in a:
-                my_obj=Stock.objects.filter(product_name=i)
-                myy_obj=Stock.objects.filter(distributor=request.user.username)
-                if not (my_obj.exists() and myy_obj.exists()):
-                    if(int(dict_of_counts[i])>1):
-                        r_obj=obj.filter(product_name=i)
-                        for j in range(0,r_obj.count()):
-                            total+=int(r_obj.values('product_quantity')[j]['product_quantity'])
-
-                        if(total!=0):    
-                            obb=SetProduct.objects.filter(name=i)
-                            x=Stock(distributor=request.user.username,product_id=r_obj.values('product_id')[0]['product_id'],product_name=i,product_price=str(int(r_obj.values('total_price')[0]['total_price'])/int(r_obj.values('product_quantity')[0]['product_quantity'])),product_desc=obb.values('description')[0]['description'],total=str(total))
-                            x.save()
-                    else:
-                        r_obj=obj.filter(product_name=i)
-                        q=r_obj.values('product_quantity')[0]['product_quantity']
-                        obb=SetProduct.objects.filter(name=i)
-                        x=Stock(distributor=request.user.username,product_id=r_obj.values('product_id')[0]['product_id'],product_name=i,product_price=str(int(r_obj.values('total_price')[0]['total_price'])/int(r_obj.values('product_quantity')[0]['product_quantity'])),product_desc=obb.values('description')[0]['description'],total=q)
-                        x.save()
-                  
+                    m=(int(c00.values('product_quantity')[j]['product_quantity']))
+                    total+=m
+                    print(total)
                     
+                    
+                if not (my_stock.filter(product_id=i).exists()):
+                    y=Stock(distributor=request.user.username,product_id=i,product_name=pro_name,product_price=pro_price,product_desc=pro_desc,total=str(total))
+                    y.save()
+                else:
+                    to=int(my_stock.filter(product_id=i).values('total')[0]['total'])
+                    my_stock.filter(product_id=i).update(total=str(to+total))
+                
+                for j in range(0,c):
+                    c0.update(calculation_status=True)
+            elif c==1:
+                total1+=int(c00.values('product_quantity')[0]['product_quantity'])
+                if not (my_stock.filter(product_id=i).exists()):
+                    y=Stock(distributor=request.user.username,product_id=i,product_name=pro_name,product_price=pro_price,product_desc=pro_desc,total=str(total1))
+                    y.save()
+                else:
+                    to=int(my_stock.filter(product_id=i).values('total')[0]['total'])
+                    my_stock.filter(product_id=i).update(total=str(to+total1))
+                c0.update(calculation_status=True)
+            else:
+                return render(request,'distributor/products.html')
+           
         return render(request,'distributor/products.html')
     elif request.method=='POST':
         return render(request,'distributor/products.html')

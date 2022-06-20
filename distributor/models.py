@@ -23,6 +23,7 @@ class DistributeToRetailer(models.Model):
     product_quantity=models.CharField(null=True,blank=True,max_length=1000)
     total_price=models.CharField(null=True,blank=True,max_length=1000)
     distributor_id=models.CharField(null=True,blank=True,max_length=1000)
+    calculation_status=models.BooleanField(default=False)
     date=models.DateField(date.today())
     def __str__(self):
         return self.Retailer_username+' '+'('+self.product_name+')'+' '+'(from:'+self.distributor_id+')'

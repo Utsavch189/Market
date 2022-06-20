@@ -21,16 +21,27 @@ def index(request):
              try:
                 main_obj=SetProduct.objects.filter(manufacturer_id=request.user.username)
                 obj=main_obj.filter(name=product)
-                
+
                 if obj.exists():
                     ann_obj=CreatedProducts.objects.filter(manufacturer_id=request.user.username)
                     r_obj=ann_obj.filter(name=product)
                     if not r_obj.exists():
                         price=obj.values('price')[0]['price']
                         desc=obj.values('description')[0]['description']
-                        newproduct=CreatedProducts(manufacturer_id=request.user.username,Product_id=Product(product),name=product,price=price,description=desc,production_no=number,production_date=date.today())
-                        newproduct.save()
-                        messages.success(request, f'Successfully Create the first entry for {product} and entered production number')
+                        
+                        pro_id_get=CreatedProducts.objects.filter(name=product)
+                        
+
+                        if not pro_id_get.exists():
+                            
+                            newproduct=CreatedProducts(manufacturer_id=request.user.username,Product_id=Product(product),name=product,price=price,description=desc,production_no=number,production_date=date.today())
+                            newproduct.save()
+                            messages.success(request, f'Successfully Create the first entry for {product} and entered production number')
+                        else:
+                            pro_id=pro_id_get.values('Product_id')[0]['Product_id']
+                            newproduct=CreatedProducts(manufacturer_id=request.user.username,Product_id=pro_id,name=product,price=price,description=desc,production_no=number,production_date=date.today())
+                            newproduct.save()
+                            messages.success(request, f'Successfully Create the first entry for {product} and entered production number')
                     else:
                         price=obj.values('price')[0]['price']
                         desc=obj.values('description')[0]['description']
@@ -123,7 +134,7 @@ def distribution(request):
                     pre_stock=rr_obj.values('production_no')[0]['production_no']
                     remain_stock=str(int(pre_stock)-int(number))
                     if int(remain_stock)>=0:
-                        x=Distribute(user=user,username=username,product_id=prod_id,manufacturer_id=manufacturer,product_name=product,product_quantity=number,total_price=str(price*int(number)),date=date.today())
+                        x=Distribute(user=user,username=username,product_id=prod_id,manufacturer_id=manufacturer,product_name=product,product_quantity=number,total_price=str(price*int(number)),calculation_status=False,date=date.today())
                         x.save()
                         rr_obj.update(production_no=remain_stock)
                         messages.success(request, f'{product} is successfully distributed to {username}!')
