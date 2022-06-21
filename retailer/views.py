@@ -10,7 +10,7 @@ from distributor.models import DistributeToRetailer
 from manufacturer.models import CreatedProducts,SetProduct
 from .models import DistributeToCustomer,RetailerStock
 from datetime import date
-
+from mainapp.dates import dates
 
 
 
@@ -207,6 +207,43 @@ def getproducts(request):
             
         
     elif request.method=='POST':
+        return Response({'info':'Running'})
+    else:
+        return Response({'msg':'bad request','status':400})
+
+
+
+
+@api_view(['GET','POST'])
+def statics(request):
+    if request.method=='GET':
+        date=dates(1)
+        obj=DistributeToCustomer.objects.filter(Retailer_id=request.user.username)
+        my_obj=obj.filter(date=date)
+        prod=[]
+        for i in range(0,my_obj.count()):
+            data={
+                'p_name':my_obj.values('product_name')[i]['product_name'],
+                'p_quantity':my_obj.values('product_quantity')[i]['product_quantity'],
+            }
+            prod.append(data)
+        return Response(prod)
+    elif request.method=='POST':
+        day=int(request.data['day'])
+        date=dates(day)
+        obj=DistributeToCustomer.objects.filter(Retailer_id=request.user.username)
+        if len(date)==1:
+            my_obj=obj.filter(date=date)
+            prod=[]
+            for i in range(0,my_obj.count()):
+                data={
+                'p_name':my_obj.values('product_name')[i]['product_name'],
+                'p_quantity':my_obj.values('product_quantity')[i]['product_quantity'],
+                }
+                prod.append(data)
+            return Response(prod)
+        else:
+            pass
         return Response({'info':'Running'})
     else:
         return Response({'msg':'bad request','status':400})

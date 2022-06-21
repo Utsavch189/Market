@@ -7,5 +7,6 @@ urlpatterns = [
     path('sell/',sell,name='sell'),
     path('gettotalproducts/',gettotalproducts),
     path('distributiondetails/',distributiondetails),
-    path('getproducts/',getproducts)
+    path('getproducts/',getproducts),
+    path('statics/',statics)
 ]
