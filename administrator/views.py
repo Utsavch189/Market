@@ -1,3 +1,4 @@
+from datetime import date
 from django.contrib import messages
 from rest_framework.response import Response
 from django.shortcuts import redirect, render
@@ -5,7 +6,7 @@ from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from mainapp.models import Register
-from .models import ApprovedUsers
+from .models import ApprovedUsers,DeletedUser
 from django.contrib.auth.models import User
 from .user import mail,password,useID
 
@@ -66,10 +67,25 @@ def approved(request):
 
     elif request.method=='POST':
         val=request.POST.get('role')
+
         obj=User.objects.filter(username=val)
+        my_obj=ApprovedUsers.objects.filter(userid=val)
+
+        first_name=my_obj.values('first_name')[0]['first_name']
+        last_name=my_obj.values('last_name')[0]['last_name']
+        email=my_obj.values('email')[0]['email']
+        contact_no=my_obj.values('contact_no')[0]['contact_no']
+        whatsapp_no=my_obj.values('whatsapp_no')[0]['whatsapp_no']
+        role=my_obj.values('role')[0]['role']
+
         if obj.exists():
-            obj.delete()
-            messages.success(request, 'Successfully Removed!')
+            try:
+                x=DeletedUser(first_name=first_name,last_name=last_name,email=email,contact_no=contact_no,whatsapp_no=whatsapp_no,role=role,date=date.today())
+                x.save()
+                obj.delete()
+                messages.success(request, 'Successfully Removed!')
+            except:
+                messages.error(request, 'Does not Removed Successfully!')
         return render(request,'administrator/approve.html')
 
     else:
@@ -79,6 +95,14 @@ def approved(request):
 
 
 
+@login_required(login_url='http://127.0.0.1:8000/login/')
+def delteduser(request):
+    if request.method=='GET':
+        return render(request,'administrator/deleteduser.html')
+    elif request.method=='POST':
+        return render(request,'administrator/deleteduser.html')
+    else:
+        return render(request,'administrator/deleteduser.html')
 
 
 
@@ -152,4 +176,28 @@ def approve(request):
 
 
 
-
+@api_view(['GET','POST'])
+def deleted(request):
+    if request.method=='GET':
+        if request.user.is_authenticated:
+            approveUsers=[]
+            alls=DeletedUser.objects.all()
+            
+            if alls.exists():
+                    for i in range(0,alls.count()):
+                        data={
+                            'name':alls.values('first_name')[i]['first_name']+' '+alls.values('last_name')[i]['last_name'],
+                            'email':alls.values('email')[i]['email'],
+                            'contact':alls.values('contact_no')[i]['contact_no'],
+                            'whatsapp':alls.values('whatsapp_no')[i]['whatsapp_no'],
+                            'role':alls.values('role')[i]['role']
+                        }
+                        approveUsers.append(data)
+                    return Response(approveUsers)
+            return Response({'info':'no data'})
+            
+        return Response({'info':'You have no permission!'})
+    elif request.method=='POST':
+        return Response({'info':'Running'})
+    else:
+        return Response({'msg':'bad request','status':400})

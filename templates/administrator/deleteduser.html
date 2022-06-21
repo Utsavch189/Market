@@ -1,0 +1,56 @@
+{% extends 'Base.html' %} {% block title %} Deleted {% endblock title %} {% block body %}
+
+
+<section class="bg-light p-5">
+    {% for message in messages %}
+    <div class="alert alert-success {% if message.tags == 'error' %} alert-danger {% endif %}" role="alert">
+        <strong>Message: </strong> {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    
+
+    <h3 class="pb-4 my-2">Deleted Users:</h3>
+
+    <div class="table-responsive table table-bordered">
+        <table class="table bg-white" id="example-table">
+            <thead class="bg-dark text-light">
+                <tr>
+                    
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Contact</th>
+                    <th>WhatsApp</th>
+                    <th>Role</th>
+
+                </tr>
+            </thead>
+            <tbody id="do"></tbody>
+        </table>
+    </div>
+</section>
+<script>
+    window.onload = () => {
+
+        fetch(`${window.location.origin}/administrator/deleted/`)
+            .then(res => res.json())
+            .then(data => document.getElementById("do").innerHTML = data.map((val, k) =>
+
+                `<tr>
+                       
+                        <td>${val['name']}</td>
+                        <td>${val['email']}</td>
+                        <td>${val['contact']}</td>
+                        <td>${val['whatsapp']}</td>
+                        <td>${val['role']}</td>
+    
+                    </tr>   
+            `
+            ))
+            .catch(err => console.log(err))
+    }
+
+
+</script>
+
+{% endblock body %}

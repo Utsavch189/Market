@@ -6,5 +6,7 @@ urlpatterns = [
     path('api/',pending),
     path('approve/',approve),
     path('approveusers/',approved,name='approveusers'),
+    path('delteduser/',delteduser,name='delteduser'),
+    path('deleted/',deleted),
    
 ]
