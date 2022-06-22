@@ -9,6 +9,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
 from .models import Register
+from administrator.models import ApprovedUsers
+from django.contrib.auth.models import User
+from administrator.user import password,Remail
 # Create your views here.
 def index(request):
     return render(request,'home.html')
@@ -61,6 +64,36 @@ def loginn(request):
 
         return render(request,'login.html')
     return render(request,'login.html')    
+
+
+def recover(request):
+    if request.method=='GET':
+        return render(request,'forgetpassword.html')
+    elif request.method=='POST':
+        userid=request.POST.get('username')
+        email=request.POST.get('email')
+     
+        if userid and email:
+            obj=ApprovedUsers.objects.filter(userid=userid)
+            obj2=User.objects.get(username=userid)
+
+
+            name=obj.values('first_name')[0]['first_name'] +' '+obj.values('last_name')[0]['last_name']
+            prev_email=obj.values('email')[0]['email']
+            Password=password()
+            if prev_email==email:
+                try:
+                    obj2.set_password(Password)
+                    obj2.save()
+                    Remail(email,name,Password)
+                    messages.success(request,'Check Your Email!')
+                except:
+                    messages.error(request,'Recovery Failed!')
+            else:
+                messages.error(request,'Enter correct Email!')
+        return render(request,'forgetpassword.html')
+    else:
+        return render(request,'forgetpassword.html')
 
 
 

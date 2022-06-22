@@ -10,6 +10,14 @@ def mail(email,name,role,username,password):
     send_mail(subject, body, mail_sender, [email], fail_silently=False)
 
 
+def Remail(email,name,password):
+    subject=f'Password Recovery for {name}'
+    body=f'{name} Your recovered login  password is: {password}'
+    mail_sender = 'utsavpokemon9000chatterjee@gmail.com'
+    send_mail(subject, body, mail_sender, [email], fail_silently=False)
+
+
+
 def password():
     characters = list(string.ascii_letters + string.digits + "!@#$%^&*")
     random.shuffle(characters)
