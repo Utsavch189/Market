@@ -33,18 +33,20 @@ def register(request):
         lat=str(request.POST.get('lat'))
         long=str(request.POST.get('long'))
         
-
-        try:
-            if(Register.objects.exists()):
-                c=Register.objects.count()
-                record=Register(first_name=fname,last_name=lname,email=mail,contact_no=contact,whatsapp_no=whatsapp,role=role,created_at=date.today(),number=c+1,latitude=lat,longitude=long)
-                record.save()
-            else:
-                record=Register(first_name=fname,last_name=lname,email=mail,contact_no=contact,whatsapp_no=whatsapp,role=role,created_at=date.today(),number=1,latitude=lat,longitude=long)
-                record.save()
-            messages.success(request, 'Successfully Registered!')
-        except:
-            messages.error(request, 'Something went wrong!!!')
+        if lat and long:
+            try:
+                if(Register.objects.exists()):
+                    c=Register.objects.count()
+                    record=Register(first_name=fname,last_name=lname,email=mail,contact_no=contact,whatsapp_no=whatsapp,role=role,created_at=date.today(),number=c+1,latitude=lat,longitude=long)
+                    record.save()
+                else:
+                    record=Register(first_name=fname,last_name=lname,email=mail,contact_no=contact,whatsapp_no=whatsapp,role=role,created_at=date.today(),number=1,latitude=lat,longitude=long)
+                    record.save()
+                messages.success(request, 'Successfully Registered!')
+            except:
+                messages.error(request, 'Something went wrong!!!')
+        else:
+            messages.error(request, 'Allow Your location must!!!')
 
         return render(request,'register.html')
 
