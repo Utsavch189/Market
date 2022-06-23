@@ -21,6 +21,7 @@ def index(request):
 
 def register(request):
     if request.method=='GET':
+        messages.warning(request, 'Must Allow Your Location')
         return render(request,'register.html')
     elif request.method=='POST':
         fname=request.POST.get('fname')
@@ -29,14 +30,17 @@ def register(request):
         contact=request.POST.get('cnum')
         whatsapp=request.POST.get('wnum')
         role=request.POST.get('role')
+        lat=str(request.POST.get('lat'))
+        long=str(request.POST.get('long'))
+        
 
         try:
             if(Register.objects.exists()):
                 c=Register.objects.count()
-                record=Register(first_name=fname,last_name=lname,email=mail,contact_no=contact,whatsapp_no=whatsapp,role=role,created_at=date.today(),number=c+1)
+                record=Register(first_name=fname,last_name=lname,email=mail,contact_no=contact,whatsapp_no=whatsapp,role=role,created_at=date.today(),number=c+1,latitude=lat,longitude=long)
                 record.save()
             else:
-                record=Register(first_name=fname,last_name=lname,email=mail,contact_no=contact,whatsapp_no=whatsapp,role=role,created_at=date.today(),number=1)
+                record=Register(first_name=fname,last_name=lname,email=mail,contact_no=contact,whatsapp_no=whatsapp,role=role,created_at=date.today(),number=1,latitude=lat,longitude=long)
                 record.save()
             messages.success(request, 'Successfully Registered!')
         except:

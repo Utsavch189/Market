@@ -10,6 +10,8 @@ class Register(models.Model):
     role=models.CharField(null=True,blank=True,max_length=500)
     created_at=models.DateField(date.today())
     number=models.CharField(null=True,blank=True,max_length=50000000)
+    latitude=models.CharField(null=True,blank=True,max_length=500)
+    longitude=models.CharField(null=True,blank=True,max_length=500)
 
     def __str__(self):
         return self.first_name + ' '+ self.last_name

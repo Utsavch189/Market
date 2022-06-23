@@ -11,6 +11,8 @@ class ApprovedUsers(models.Model):
     contact_no=models.CharField(null=True,blank=True,max_length=500)
     whatsapp_no=models.CharField(null=True,blank=True,max_length=500)
     role=models.CharField(null=True,blank=True,max_length=500)
+    latitude=models.CharField(null=True,blank=True,max_length=500)
+    longitude=models.CharField(null=True,blank=True,max_length=500)
 
     def __str__(self):
         return self.first_name + ' '+ self.last_name+'('+self.role+')'

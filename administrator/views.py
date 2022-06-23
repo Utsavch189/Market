@@ -41,7 +41,7 @@ def index(request):
                     user.last_name = r_obj.values('role')[0]['role']
                     user.email = email
                     user.save()
-                    approvedUser=ApprovedUsers(author=user,userid=userid,first_name=r_obj.values('first_name')[0]['first_name'],last_name=r_obj.values('last_name')[0]['last_name'],email=r_obj.values('email')[0]['email'],contact_no=r_obj.values('contact_no')[0]['contact_no'],whatsapp_no=r_obj.values('whatsapp_no')[0]['whatsapp_no'],role=r_obj.values('role')[0]['role'])
+                    approvedUser=ApprovedUsers(author=user,userid=userid,first_name=r_obj.values('first_name')[0]['first_name'],last_name=r_obj.values('last_name')[0]['last_name'],email=r_obj.values('email')[0]['email'],contact_no=r_obj.values('contact_no')[0]['contact_no'],whatsapp_no=r_obj.values('whatsapp_no')[0]['whatsapp_no'],role=r_obj.values('role')[0]['role'],latitude=r_obj.values('latitude')[0]['latitude'],longitude=r_obj.values('longitude')[0]['longitude'])
                     approvedUser.save()
                     r_obj.delete()
                     messages.success(request, f'{name} is Successfully Approved!')
