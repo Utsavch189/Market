@@ -111,3 +111,70 @@ def recover(request):
 def logoutt(request):
     logout(request)
     return redirect('home')
+
+
+@api_view(['GET','POST'])
+def manufact(request):
+    if request.method=='GET':
+        obj=ApprovedUsers.objects.filter(role='Manufacturer')
+        m=[]
+        if obj.exists():
+            for i in range(0,obj.count()):
+                m.append(
+                    [
+                        float(obj.values('latitude')[i]['latitude']),
+                        float(obj.values('longitude')[i]['longitude'])
+                    ]
+                )
+
+        return Response(m)
+    elif request.method=='POST':
+        return Response({'info':'running'})
+    else:
+        return Response({'info':'bad request'})
+
+
+
+@api_view(['GET','POST'])
+def distribut(request):
+    if request.method=='GET':
+        obj=ApprovedUsers.objects.filter(role='Distributor')
+        m=[]
+        if obj.exists():
+            for i in range(0,obj.count()):
+                m.append(
+                    [
+                        float(obj.values('latitude')[i]['latitude']),
+                        float(obj.values('longitude')[i]['longitude'])
+                    ]
+                )
+
+        return Response(m)
+    elif request.method=='POST':
+        return Response({'info':'running'})
+    else:
+        return Response({'info':'bad request'})
+
+
+
+
+
+@api_view(['GET','POST'])
+def retailer(request):
+    if request.method=='GET':
+        obj=ApprovedUsers.objects.filter(role='Retailer')
+        m=[]
+        if obj.exists():
+            for i in range(0,obj.count()):
+                m.append(
+                    [
+                        float(obj.values('latitude')[i]['latitude']),
+                        float(obj.values('longitude')[i]['longitude'])
+                    ]
+                )
+
+        return Response(m)
+    elif request.method=='POST':
+        return Response({'info':'running'})
+    else:
+        return Response({'info':'bad request'})
