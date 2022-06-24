@@ -33,21 +33,24 @@ def register(request):
         lat=str(request.POST.get('lat'))
         long=str(request.POST.get('long'))
         
-        if lat and long:
-            try:
-                if(Register.objects.exists()):
-                    c=Register.objects.count()
-                    record=Register(first_name=fname,last_name=lname,email=mail,contact_no=contact,whatsapp_no=whatsapp,role=role,created_at=date.today(),number=c+1,latitude=lat,longitude=long)
-                    record.save()
-                else:
-                    record=Register(first_name=fname,last_name=lname,email=mail,contact_no=contact,whatsapp_no=whatsapp,role=role,created_at=date.today(),number=1,latitude=lat,longitude=long)
-                    record.save()
-                messages.success(request, 'Successfully Registered!')
-            except:
-                messages.error(request, 'Something went wrong!!!')
+        obb=Register.objects.filter(email=mail)
+        if not obb.exists():
+            if lat and long:
+                try:
+                    if(Register.objects.exists()):
+                        c=Register.objects.count()
+                        record=Register(first_name=fname,last_name=lname,email=mail,contact_no=contact,whatsapp_no=whatsapp,role=role,created_at=date.today(),number=c+1,latitude=lat,longitude=long)
+                        record.save()
+                    else:
+                        record=Register(first_name=fname,last_name=lname,email=mail,contact_no=contact,whatsapp_no=whatsapp,role=role,created_at=date.today(),number=1,latitude=lat,longitude=long)
+                        record.save()
+                    messages.success(request, 'Successfully Registered!')
+                except:
+                    messages.error(request, 'Something went wrong!!!')
+            else:
+                messages.error(request, 'Allow Your location must!!!')
         else:
-            messages.error(request, 'Allow Your location must!!!')
-
+            messages.error(request, 'Already this email is taken!!!')
         return render(request,'register.html')
 
 
@@ -76,10 +79,12 @@ def recover(request):
     if request.method=='GET':
         return render(request,'forgetpassword.html')
     elif request.method=='POST':
-        userid=request.POST.get('username')
+        
         email=request.POST.get('email')
      
-        if userid and email:
+        if  email:
+            my_obj=ApprovedUsers.objects.filter(email=email)
+            userid=my_obj.values('userid')[0]['userid']
             obj=ApprovedUsers.objects.filter(userid=userid)
             obj2=User.objects.get(username=userid)
 
@@ -91,7 +96,7 @@ def recover(request):
                 try:
                     obj2.set_password(Password)
                     obj2.save()
-                    Remail(email,name,Password)
+                    Remail(email,name,Password,userid)
                     messages.success(request,'Check Your Email!')
                 except:
                     messages.error(request,'Recovery Failed!')

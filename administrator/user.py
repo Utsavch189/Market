@@ -10,9 +10,9 @@ def mail(email,name,role,username,password):
     send_mail(subject, body, mail_sender, [email], fail_silently=False)
 
 
-def Remail(email,name,password):
+def Remail(email,name,password,userid):
     subject=f'Password Recovery for {name}'
-    body=f'{name} Your recovered login  password is: {password}'
+    body=f'{name} Your UserID is {userid} and Your recovered login  password is: {password}'
     mail_sender = 'utsavpokemon9000chatterjee@gmail.com'
     send_mail(subject, body, mail_sender, [email], fail_silently=False)
 
