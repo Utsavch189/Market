@@ -121,9 +121,9 @@ def manufact(request):
         if obj.exists():
             for i in range(0,obj.count()):
                 m.append(
-                    [
-                        float(obj.values('latitude')[i]['latitude']),
-                        float(obj.values('longitude')[i]['longitude'])
+                    [   float(obj.values('longitude')[i]['longitude']),
+                        float(obj.values('latitude')[i]['latitude'])
+                       
                     ]
                 )
 
@@ -143,9 +143,9 @@ def distribut(request):
         if obj.exists():
             for i in range(0,obj.count()):
                 m.append(
-                    [
-                        float(obj.values('latitude')[i]['latitude']),
-                        float(obj.values('longitude')[i]['longitude'])
+                    [   float(obj.values('longitude')[i]['longitude']),
+                        float(obj.values('latitude')[i]['latitude'])
+                        
                     ]
                 )
 
@@ -167,9 +167,9 @@ def retailer(request):
         if obj.exists():
             for i in range(0,obj.count()):
                 m.append(
-                    [
-                        float(obj.values('latitude')[i]['latitude']),
-                        float(obj.values('longitude')[i]['longitude'])
+                    [   float(obj.values('longitude')[i]['longitude']),
+                        float(obj.values('latitude')[i]['latitude'])
+                        
                     ]
                 )
 
@@ -178,3 +178,77 @@ def retailer(request):
         return Response({'info':'running'})
     else:
         return Response({'info':'bad request'})
+
+
+@api_view(['GET','POST'])
+def allnetwork(request):
+    if request.method=='GET':
+        obj=ApprovedUsers.objects.filter(role='Manufacturer')
+        obj1=ApprovedUsers.objects.filter(role='Retailer')
+        obj2=ApprovedUsers.objects.filter(role='Distributor')
+        m=[]
+        if obj.exists():
+            for i in range(0,obj.count()):
+                m.append(
+                    [   float(obj.values('longitude')[i]['longitude']),
+                        float(obj.values('latitude')[i]['latitude'])
+                        
+                    ]
+                )
+        if obj1.exists():
+            for i in range(0,obj1.count()):
+                m.append(
+                    [   float(obj1.values('longitude')[i]['longitude']),
+                        float(obj1.values('latitude')[i]['latitude'])
+                        
+                    ]
+                )
+
+        if obj2.exists():
+            for i in range(0,obj2.count()):
+                m.append(
+                    [   float(obj2.values('longitude')[i]['longitude']),
+                        float(obj2.values('latitude')[i]['latitude'])
+                        
+                    ]
+                )
+
+        return Response(m)
+    elif request.method=='POST':
+        val=request.data['msg']
+        
+        obj=ApprovedUsers.objects.filter(userid=val)
+        m=[]
+        if obj.exists():
+            for i in range(0,obj.count()):
+                m.append(
+                    [   float(obj.values('longitude')[i]['longitude']),
+                        float(obj.values('latitude')[i]['latitude'])
+                        
+                    ]
+                )
+
+        return Response(m)
+    else:
+        return Response({'info':'bad request'})
+
+
+@api_view(['GET','POST'])
+def numbers(request):
+    if request.method=='GET':
+        obj=ApprovedUsers.objects.filter(role='Manufacturer')
+        obj1=ApprovedUsers.objects.filter(role='Retailer')
+        obj2=ApprovedUsers.objects.filter(role='Distributor')
+        m=[
+            {'manufa':obj.count()},
+            {'distri':obj2.count()},
+            {'retail':obj1.count()}
+        ]
+
+
+        return Response(m)
+    elif request.method=='POST':
+        return Response({'info':'running'})
+    else:
+        return Response({'info':'bad request'})
+

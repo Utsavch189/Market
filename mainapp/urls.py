@@ -9,5 +9,7 @@ urlpatterns = [
     path('recover/',recover,name='recover'),
     path('manufact/',manufact),
     path('distribut/',distribut),
-    path('retailer/',retailer)
+    path('retailer/',retailer),
+    path('allnetwork/',allnetwork),
+    path('numbers/',numbers),
 ]
