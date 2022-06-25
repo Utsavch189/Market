@@ -187,6 +187,8 @@ def allnetwork(request):
         obj1=ApprovedUsers.objects.filter(role='Retailer')
         obj2=ApprovedUsers.objects.filter(role='Distributor')
         m=[]
+        n=[]
+        res=[]
         if obj.exists():
             for i in range(0,obj.count()):
                 m.append(
@@ -194,7 +196,9 @@ def allnetwork(request):
                         float(obj.values('latitude')[i]['latitude'])
                         
                     ]
+                
                 )
+                n.append(obj.values('userid')[i]['userid'])
         if obj1.exists():
             for i in range(0,obj1.count()):
                 m.append(
@@ -203,6 +207,7 @@ def allnetwork(request):
                         
                     ]
                 )
+                n.append(obj1.values('userid')[i]['userid'])
 
         if obj2.exists():
             for i in range(0,obj2.count()):
@@ -212,8 +217,10 @@ def allnetwork(request):
                         
                     ]
                 )
-
-        return Response(m)
+                n.append(obj2.values('userid')[i]['userid'])
+        res.append(m)
+        res.append(n)
+        return Response(res)
     elif request.method=='POST':
         val=request.data['msg']
         
