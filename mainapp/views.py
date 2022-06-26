@@ -8,6 +8,8 @@ from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
+
+from manufacturer.models import Distribute
 from .models import Register
 from administrator.models import ApprovedUsers
 from django.contrib.auth.models import User
@@ -273,4 +275,6 @@ def numbers(request):
         return Response({'info':'running'})
     else:
         return Response({'info':'bad request'})
+
+
 

@@ -10,4 +10,5 @@ urlpatterns = [
     path('manufacturedproducts/',manufacturedproducts),
     path('distribute/',distribute),
     path('distributiondetails/',distributiondetails),
+    path('bestproductmanu/',bestproductmanu)
 ]

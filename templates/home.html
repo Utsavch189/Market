@@ -13,4 +13,24 @@
 
 
 
-{% else %} {% ifequal request.user.last_name "Admin" %} {% include 'adminhome.html' %} {% else %} {% ifequal request.user.last_name "Manufacturer" %} manu {% else %} {% ifequal request.user.last_name "Distributor" %} dist {% else %} {% ifequal request.user.last_name "Retailer" %} Retailer {% else %} superuser {% endifequal %} {% endifequal%} {% endifequal %} {% endifequal %} {% endif %} {% endblock body %}
+{% else %}
+ 
+{% ifequal request.user.last_name "Admin" %} 
+{% include 'adminhome.html' %} 
+{% else %} 
+{% ifequal request.user.last_name "Manufacturer" %} 
+{% include 'manufacthome.html' %}  
+{% else %}
+{% ifequal request.user.last_name "Distributor" %} 
+dist 
+{% else %} 
+{% ifequal request.user.last_name "Retailer" %} 
+Retailer 
+{% else %} 
+superuser 
+{% endifequal %} 
+{% endifequal%} 
+{% endifequal %} 
+{% endifequal %} 
+{% endif %} 
+{% endblock body %}

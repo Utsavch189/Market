@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from administrator.models import ApprovedUsers
 from distributor.models import DistributeToRetailer
 from manufacturer.models import CreatedProducts,SetProduct
-from .models import DistributeToCustomer,RetailerStock
+from .models import DistributeToCustomer,RetailerStock,TotalProducts
 from datetime import date
 from mainapp.dates import dates
 
@@ -96,6 +96,13 @@ def sell(request):
             stock=r_stock.filter(product_name=product)
             pre_stock=stock.values('total')[0]['total']
             remain_stock=int(int(pre_stock)-int(number))
+
+            ###
+            t_obj=TotalProducts.objects.filter(retailer_id=request.user.username)
+            rt_obj=t_obj.filter(product_name=product)
+            ###
+
+
             if not pro.exists():
                 if remain_stock>=0:
                  try:
@@ -103,6 +110,18 @@ def sell(request):
                     x.save()
                     
                     stock.update(total=remain_stock)
+
+                    ###
+                    if not rt_obj.exists():
+                        y=TotalProducts(product_id=product_id,retailer_id=request.user.username,product_name=product,product_quantity=number,date=date.today())
+                        y.save()
+                    else:
+                        val1=rt_obj.values('product_quantity')[0]['product_quantity']
+                        new1_total=int(val1)+int(number)
+                        rt_obj.update(product_quantity=str(new1_total))
+                    ###
+
+
                     messages.success(request, f'{product} is successfully selled !')
                  except:
            
@@ -111,7 +130,8 @@ def sell(request):
                     messages.error(request, f'Stock for {product} is not enough!!!')
             else:
                 l_date=pro.values('date')[0]['date']
-                if pro.exists() and l_date!=dates(1):
+                l1_date=rt_obj.values('date')[0]['date']
+                if pro.exists() and l_date!=dates(1) and rt_obj.exists() and l1_date!=dates(1):
 
                     if remain_stock>=0:
                         try:
@@ -119,6 +139,12 @@ def sell(request):
                             x.save()
                     
                             stock.update(total=remain_stock)
+
+                            ###
+                            y=TotalProducts(product_id=product_id,retailer_id=request.user.username,product_name=product,product_quantity=number,date=date.today())
+                            y.save()
+                            ###
+
                             messages.success(request, f'{product} is successfully selled !')
                         except:
            
@@ -131,9 +157,17 @@ def sell(request):
                     if remain_stock>=0:
                         val=pro.values('product_quantity')[0]['product_quantity']
                         new_total=int(val)+int(number)
+
+                        ###
+                        val1=rt_obj.values('product_quantity')[0]['product_quantity']
+                        new1_total=int(val1)+int(number)  
+                        ###
                         pro.update(product_quantity=str(new_total))
                         pro.update(total_price=str(new_total*int(price)))
                         stock.update(total=remain_stock)
+                        ###
+                        rt_obj.update(product_quantity=str(new1_total))
+                        ###
                         messages.success(request, f'{product} quantity has been changed!')
         
                     else:

@@ -44,3 +44,14 @@ class Distribute(models.Model):
 
     def __str__(self):
         return self.user + ' '+'('+self.product_name+')'+' '+'( from:'+self.manufacturer_id+')'
+
+
+class TotalProducts(models.Model):
+    product_id=models.CharField(null=True,blank=True,max_length=500)
+    manufacturer_id=models.CharField(null=True,blank=True,max_length=500)
+    product_name=models.CharField(null=True,blank=True,max_length=500)
+    product_quantity=models.CharField(null=True,blank=True,max_length=500)
+    date=models.DateField(date.today())
+    
+    def __str__(self) -> str:
+        return self.product_name

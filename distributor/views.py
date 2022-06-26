@@ -7,8 +7,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from manufacturer.models import CreatedProducts, Distribute,SetProduct
 from administrator.models import ApprovedUsers
-from .models import DistributeToRetailer,Stock
+from .models import DistributeToRetailer,Stock,TotalProducts
 from mainapp.dates import dates
+from datetime import date
 # Create your views here.
 
 @login_required(login_url='http://127.0.0.1:8000/login/')
@@ -39,6 +40,13 @@ def index(request):
            obj=DistributeToRetailer.objects.filter(Retailer_id=retailer)
            r_obj=obj.filter(distributor_id=request.user.username)
            re_obj=r_obj.filter(product_name=product)
+
+           ###
+           t_obj=TotalProducts.objects.filter(distributor_id=request.user.username)
+           rt_obj=t_obj.filter(product_name=product)
+           ###
+
+
            if not re_obj.exists():
              if remain_stock>=0:
                 try:
@@ -46,6 +54,17 @@ def index(request):
                     x.save()
                     
                     stock.update(total=remain_stock)
+
+                    ###
+                    if not rt_obj.exists():
+                        y=TotalProducts(product_id=product_id,distributor_id=request.user.username,product_name=product,product_quantity=number,date=date.today())
+                        y.save()
+                    else:
+                        val1=rt_obj.values('product_quantity')[0]['product_quantity']
+                        new1_total=int(val1)+int(number)
+                        rt_obj.update(product_quantity=str(new1_total))
+                    ###
+
                     messages.success(request, f'{product} is successfully distributed to {retailer}!')
                 except:
            
@@ -57,13 +76,21 @@ def index(request):
        
            else:
               l_date=re_obj.values('date')[0]['date']
-              if re_obj.exists() and l_date!=dates(1):
+              l1_date=rt_obj.values('date')[0]['date']
+              if re_obj.exists() and l_date!=dates(1) and rt_obj.exists() and l1_date!=dates(1):
                 if remain_stock>=0:
                     try:
-                        x=DistributeToRetailer(Retailer_id=retailer,Retailer_username=retailer_name,product_id=product_id,product_name=product,product_quantity=number,total_price=str(int(price)*int(number)),distributor_id=request.user.username,calculation_status=False,date=datetime.today())
+                        x=DistributeToRetailer(Retailer_id=retailer,Retailer_username=retailer_name,product_id=product_id,product_name=product,product_quantity=number,total_price=str(int(price)*int(number)),distributor_id=request.user.username,calculation_status=False,date=date.today())
                         x.save()
                     
                         stock.update(total=remain_stock)
+
+                        ###
+                        y=TotalProducts(product_id=product_id,distributor_id=request.user.username,product_name=product,product_quantity=number,date=date.today())
+                        y.save()
+                        ###
+
+
                         messages.success(request, f'{product} is successfully distributed to {retailer}!')
                     except:
            
@@ -76,9 +103,16 @@ def index(request):
                 if remain_stock>=0:
                     val=re_obj.values('product_quantity')[0]['product_quantity']
                     new_total=int(val)+int(number)
+                    ###
+                    val1=rt_obj.values('product_quantity')[0]['product_quantity']
+                    new1_total=int(val1)+int(number)  
+                    ###
                     re_obj.update(product_quantity=str(new_total))
                     re_obj.update(total_price=str(new_total*int(price)))
                     stock.update(total=remain_stock)
+                    ###
+                    rt_obj.update(product_quantity=str(new1_total))
+                    ###
                     messages.success(request, f'{product} quantity has been changed!')
 
                 else:

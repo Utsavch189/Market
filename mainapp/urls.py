@@ -12,4 +12,5 @@ urlpatterns = [
     path('retailer/',retailer),
     path('allnetwork/',allnetwork),
     path('numbers/',numbers),
+    
 ]
