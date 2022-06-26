@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from manufacturer.models import CreatedProducts, Distribute,SetProduct
 from administrator.models import ApprovedUsers
 from .models import DistributeToRetailer,Stock
+from mainapp.dates import dates
 # Create your views here.
 
 @login_required(login_url='http://127.0.0.1:8000/login/')
@@ -55,16 +56,33 @@ def index(request):
        
        
            else:
-              if remain_stock>=0:
-                val=re_obj.values('product_quantity')[0]['product_quantity']
-                new_total=int(val)+int(number)
-                re_obj.update(product_quantity=str(new_total))
-                re_obj.update(total_price=str(new_total*int(price)))
-                stock.update(total=remain_stock)
-                messages.success(request, f'{product} quantity has been changed!')
-
+              l_date=re_obj.values('date')[0]['date']
+              if re_obj.exists() and l_date!=dates(1):
+                if remain_stock>=0:
+                    try:
+                        x=DistributeToRetailer(Retailer_id=retailer,Retailer_username=retailer_name,product_id=product_id,product_name=product,product_quantity=number,total_price=str(int(price)*int(number)),distributor_id=request.user.username,calculation_status=False,date=datetime.today())
+                        x.save()
+                    
+                        stock.update(total=remain_stock)
+                        messages.success(request, f'{product} is successfully distributed to {retailer}!')
+                    except:
+           
+                        messages.error(request, 'Something went wrong!!!')
+       
+                else:
+                    messages.error(request, f'Stock for {product} is not enough!!!')
+       
               else:
-                messages.error(request, f'Stock for {product} is not enough!!!')
+                if remain_stock>=0:
+                    val=re_obj.values('product_quantity')[0]['product_quantity']
+                    new_total=int(val)+int(number)
+                    re_obj.update(product_quantity=str(new_total))
+                    re_obj.update(total_price=str(new_total*int(price)))
+                    stock.update(total=remain_stock)
+                    messages.success(request, f'{product} quantity has been changed!')
+
+                else:
+                    messages.error(request, f'Stock for {product} is not enough!!!')
 
 
         return render(request,'distributor/distribute.html')

@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from administrator.models import ApprovedUsers
 from .models import CreatedProducts,SetProduct,Distribute
 from .product_iddd import Product
+from mainapp.dates import dates
 
 
 @login_required(login_url='http://127.0.0.1:8000/login/')
@@ -140,20 +141,39 @@ def distribution(request):
                         messages.success(request, f'{product} is successfully distributed to {username}!')
                     else:
                         messages.error(request, 'Do not have enough stock!!!')
-                  
+                
+              
+
+
+
+
                 else:
-                    ann_obj=CreatedProducts.objects.filter(manufacturer_id=request.user.username)
-                    rr_obj=ann_obj.filter(name=product)
-                    pre_stock=rr_obj.values('production_no')[0]['production_no']
-                    remain_stock=str(int(pre_stock)-int(number))
-                    val=r_obj.values('product_quantity')[0]['product_quantity']
-                    new_total=int(val)+int(number)
-                    if int(remain_stock)>=0:
-                        r_obj.update(product_quantity=str(new_total),total_price=str(price*int(new_total)))
-                        messages.success(request, f'{product} has been successfully updated for {username}!')
-                        rr_obj.update(production_no=remain_stock)
+                    l_date=r_obj.values('date')[0]['date']
+                    if r_obj.exists() and l_date!=dates(1):
+                        ann_obj=CreatedProducts.objects.filter(manufacturer_id=request.user.username)
+                        rr_obj=ann_obj.filter(name=product)
+                        pre_stock=rr_obj.values('production_no')[0]['production_no']
+                        remain_stock=str(int(pre_stock)-int(number))
+                        if int(remain_stock)>=0:
+                            x=Distribute(user=user,username=username,product_id=prod_id,manufacturer_id=manufacturer,product_name=product,product_quantity=number,total_price=str(price*int(number)),calculation_status=False,date=date.today())
+                            x.save()
+                            rr_obj.update(production_no=remain_stock)
+                            messages.success(request, f'{product} is successfully distributed to {username}!')
+                        else:
+                            messages.error(request, 'Do not have enough stock!!!')
                     else:
-                        messages.error(request, 'Do not have enough stock!!!')
+                        ann_obj=CreatedProducts.objects.filter(manufacturer_id=request.user.username)
+                        rr_obj=ann_obj.filter(name=product)
+                        pre_stock=rr_obj.values('production_no')[0]['production_no']
+                        remain_stock=str(int(pre_stock)-int(number))
+                        val=r_obj.values('product_quantity')[0]['product_quantity']
+                        new_total=int(val)+int(number)
+                        if int(remain_stock)>=0:
+                            r_obj.update(product_quantity=str(new_total),total_price=str(price*int(new_total)))
+                            messages.success(request, f'{product} has been successfully updated for {username}!')
+                            rr_obj.update(production_no=remain_stock)
+                        else:
+                            messages.error(request, 'Do not have enough stock!!!')
             except:
                 messages.error(request, 'Something went wrong!!!')
 

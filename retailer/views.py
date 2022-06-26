@@ -110,16 +110,34 @@ def sell(request):
                 else:
                     messages.error(request, f'Stock for {product} is not enough!!!')
             else:
-             if remain_stock>=0:
-                val=pro.values('product_quantity')[0]['product_quantity']
-                new_total=int(val)+int(number)
-                pro.update(product_quantity=str(new_total))
-                pro.update(total_price=str(new_total*int(price)))
-                stock.update(total=remain_stock)
-                messages.success(request, f'{product} quantity has been changed!')
+                l_date=pro.values('date')[0]['date']
+                if pro.exists() and l_date!=dates(1):
+
+                    if remain_stock>=0:
+                        try:
+                            x=DistributeToCustomer(Retailer_id=request.user.username,Retailer_username=str(request.user.first_name)+str(request.user.last_name),product_id=product_id,product_name=product,product_quantity=number,total_price=str(int(price)*int(number)),date=date.today())
+                            x.save()
+                    
+                            stock.update(total=remain_stock)
+                            messages.success(request, f'{product} is successfully selled !')
+                        except:
+           
+                            messages.error(request, 'Something went wrong!!!')
+                        else:
+                            messages.error(request, f'Stock for {product} is not enough!!!')
+
+                else:
+
+                    if remain_stock>=0:
+                        val=pro.values('product_quantity')[0]['product_quantity']
+                        new_total=int(val)+int(number)
+                        pro.update(product_quantity=str(new_total))
+                        pro.update(total_price=str(new_total*int(price)))
+                        stock.update(total=remain_stock)
+                        messages.success(request, f'{product} quantity has been changed!')
         
-             else:
-                messages.error(request, f'Stock for {product} is not enough!!!')
+                    else:
+                        messages.error(request, f'Stock for {product} is not enough!!!')
         
         
         return render(request,'retailer/sell.html')
