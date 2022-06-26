@@ -124,13 +124,15 @@
 
                 <div style="margin-right: 30px;">
                     <label for="role" class="form-label">Best Selling Product Day wise</label><br>
-                    <select name="role" id="role" required>
+                    <form>
+                        <select name="role" id="days" required>
                     <option value="None">Choose</option>
                     <option value="1">Today</option>
                     <option value="2">Yesterday</option>
                     <option value="7">Prev 7 days</option>
                     <option value="30">Prev 30 days</option>
-                </select>
+                        </select>
+                    </form>
                 </div>
             </div>
         </nav>
@@ -144,7 +146,9 @@
 
             <div class=" graph card shadow  bg-body rounded">
                 <h5 class="text-center">Best Selling Product</h5>
-                <canvas id="myChart" width="200" height="200"></canvas></div>
+                <canvas id="myChart" width="200" height="200"></canvas>
+                <canvas id="myChart1" width="200" height="200"></canvas>
+            </div>
 
         </div>
 
@@ -271,12 +275,21 @@
 
 
         function bargraph() {
-
+            let label = []
+            let datas = []
             const ctx = document.getElementById('myChart').getContext('2d');
-            fetch(`${window.location.origin}/numbers/`)
+            fetch(`${window.location.origin}/manufacturer/bestproductmanu/`)
                 .then(res => res.json())
                 .then(data => {
-                    const labels = ['a', 'b', 'c', 'd', 'e', 'f', 'g']
+                    for (let i = 0; i < data[0].length; i++) {
+                        label.push(data[0][i])
+
+                    }
+                    for (let i = 0; i < data[1].length; i++) {
+                        datas.push(data[1][i])
+
+                    }
+                    const labels = label
                     const myChart = new Chart(ctx, {
                         type: 'bar',
 
@@ -284,7 +297,7 @@
                             labels: labels,
                             datasets: [{
                                 label: 'My First Dataset',
-                                data: [65, 59, 80, 81, 56, 55, 40],
+                                data: datas,
                                 backgroundColor: [
                                     'rgba(255, 99, 132, 0.2)',
                                     'rgba(255, 159, 64, 0.2)',
@@ -310,5 +323,81 @@
                 })
         }
         bargraph()
+
+
+
+
+        function show() {
+            var e = document.getElementById("days");
+            var val = document.forms[0].days.value;
+
+            e.onchange = show;
+
+            let label = []
+            let datas = []
+            let ctx1 = document.getElementById('myChart1').getContext('2d');
+
+            fetch(`${window.location.origin}/manufacturer/bestproductmanu/`, {
+                    method: 'POST',
+
+                    headers: {
+                        "X-CSRFToken": '{{csrf_token}}',
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        'value': val
+                    }),
+                })
+                .then(res => res.json())
+                .then(data => {
+                    for (let i = 0; i < data[0].length; i++) {
+                        label.push(data[0][i])
+
+                    }
+                    for (let i = 0; i < data[1].length; i++) {
+                        datas.push(data[1][i])
+
+                    }
+                    const labels = label
+                    console.log(label)
+                    const myChart = new Chart(ctx1, {
+                        type: 'bar',
+
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'My First Dataset',
+                                data: datas,
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(255, 159, 64, 0.2)',
+                                    'rgba(255, 205, 86, 0.2)',
+                                    'rgba(75, 192, 192, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(153, 102, 255, 0.2)',
+                                    'rgba(201, 203, 207, 0.2)'
+                                ],
+                                borderColor: [
+                                    'rgb(255, 99, 132)',
+                                    'rgb(255, 159, 64)',
+                                    'rgb(255, 205, 86)',
+                                    'rgb(75, 192, 192)',
+                                    'rgb(54, 162, 235)',
+                                    'rgb(153, 102, 255)',
+                                    'rgb(201, 203, 207)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        }
+                    });
+                })
+
+
+
+
+        }
+
+        show();
     </script>
 </body>

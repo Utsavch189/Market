@@ -342,22 +342,19 @@ def distributiondetails(request):
 @api_view(['GET','POST'])
 def bestproductmanu(request):
     if request.method=='GET':
-        p_obj=SetProduct.objects.filter(manufacturer_id=request.user.username)
-        prods=[]
-        res=[]
-        quant=[]
-        if p_obj.exists():
-            obj=Distribute.objects.filter(manufacturer_id=request.user.username)
-            for i in range(0,p_obj.count()):
-                if obj.filter(product_name=p_obj.values('name')[i]['name']).exists():
-                    prods.append(p_obj.values('name')[i]['name'])
-        
-            
-            if obj.exists():
-                r_obj=obj.filter(date=dates(1))
+            p_obj=TotalProducts.objects.filter(manufacturer_id=request.user.username)
+            prods=[]
+            res=[]
+            quant=[]
+            if p_obj.exists():
+                obj=p_obj.filter(date=dates(1))
+                for i in range(0,obj.count()):
                 
+                    prods.append(obj.values('product_name')[i]['product_name'])
+            
+              
                 for item in prods:
-                    n_obj=r_obj.filter(product_name=item)
+                    n_obj=obj.filter(product_name=item)
                     if n_obj.exists():
                         quant.append(n_obj.values('product_quantity')[0]['product_quantity'])
 
@@ -365,11 +362,68 @@ def bestproductmanu(request):
                 res.append(quant)
 
                 return Response(res)
+           
+            else:
+                return Response({'info':'no data'})
+           
+
+    elif request.method=='POST':
+        val=request.data['value']
+    
+        if val==int(1) or val==int(2):
+            p_obj=TotalProducts.objects.filter(manufacturer_id=request.user.username)
+            prods=[]
+            res=[]
+            quant=[]
+            if p_obj.exists():
+                obj=p_obj.filter(date=dates(int(val)))
+                for i in range(0,obj.count()):
+                
+                    prods.append(obj.values('product_name')[i]['product_name'])
+            
+              
+                for item in prods:
+                    n_obj=obj.filter(product_name=item)
+                    if n_obj.exists():
+                        quant.append(n_obj.values('product_quantity')[0]['product_quantity'])
+
+                res.append(prods)
+                res.append(quant)
+
+                return Response(res)
+           
             else:
                 return Response({'info':'no data'})
         else:
-            return Response({'info':'no data'})
-    elif request.method=='POST':
-        return Response({'info':'running'})
+            p_obj=TotalProducts.objects.filter(manufacturer_id=request.user.username)
+            prods=set()
+        
+            res=[]
+            quant=[]
+        
+            date=dates(3)
+            for i in date:
+                obj=p_obj.filter(date=i)
+                if obj.exists():
+                    for j in range(0,obj.count()):
+                        prods.add(obj.values('product_name')[j]['product_name'])
+
+            new_prods=list(prods)
+
+            for item in new_prods:
+                total=0
+                c=p_obj.filter(product_name=item)
+                if c.count()==1:
+                    quant.append(int(c.values('product_quantity')[0]['product_quantity']))
+                else:
+                    for i in range(0,c.count()):
+                        total+=int(c.values('product_quantity')[i]['product_quantity'])
+                    quant.append(total)
+            res.append(new_prods)
+            res.append(quant)
+            return Response(res)
+        
+
+        
     else:
         return Response({'info':'bad request'})
