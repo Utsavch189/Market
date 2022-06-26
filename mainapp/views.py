@@ -118,6 +118,8 @@ def manufact(request):
     if request.method=='GET':
         obj=ApprovedUsers.objects.filter(role='Manufacturer')
         m=[]
+        n=[]
+        res=[]
         if obj.exists():
             for i in range(0,obj.count()):
                 m.append(
@@ -126,8 +128,11 @@ def manufact(request):
                        
                     ]
                 )
+                n.append(obj.values('userid')[i]['userid'])
+            res.append(m)
+            res.append(n)
 
-        return Response(m)
+        return Response(res)
     elif request.method=='POST':
         return Response({'info':'running'})
     else:
@@ -140,6 +145,8 @@ def distribut(request):
     if request.method=='GET':
         obj=ApprovedUsers.objects.filter(role='Distributor')
         m=[]
+        n=[]
+        res=[]
         if obj.exists():
             for i in range(0,obj.count()):
                 m.append(
@@ -148,8 +155,11 @@ def distribut(request):
                         
                     ]
                 )
+                n.append(obj.values('userid')[i]['userid'])
+            res.append(m)
+            res.append(n)
 
-        return Response(m)
+        return Response(res)
     elif request.method=='POST':
         return Response({'info':'running'})
     else:
@@ -164,6 +174,8 @@ def retailer(request):
     if request.method=='GET':
         obj=ApprovedUsers.objects.filter(role='Retailer')
         m=[]
+        n=[]
+        res=[]
         if obj.exists():
             for i in range(0,obj.count()):
                 m.append(
@@ -172,8 +184,11 @@ def retailer(request):
                         
                     ]
                 )
+                n.append(obj.values('userid')[i]['userid'])
+            res.append(m)
+            res.append(n)
 
-        return Response(m)
+        return Response(res)
     elif request.method=='POST':
         return Response({'info':'running'})
     else:
