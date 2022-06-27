@@ -1,7 +1,10 @@
 {% extends 'Base.html' %} {% block title %} Distribute {% endblock title %} {% block body %}
 
 <section class="bg-light p-5 w-100" id="entirePage">
-
+    <div class="conatiner input my-2" style="width: 230px;"> <label for="number" class="form-label">Search Distributor</label>
+        <input type="text" class="form-control" id="dist" name="dist" placeholder="Search Distributor">
+    </div>
+    <button type="submit" class="btn btn-outline-primary my-2" value="register" id="search">Search</button>
     <h3 class="pb-4 my-2">Distributors:</h3>
 
     <div class="table-responsive table table-bordered">
@@ -23,5 +26,37 @@
 </section>
 
 <script src="/static/scripts/manufacturer/distribution.js"></script>
+<script>
+    document.getElementById('search').onclick = () => {
+        val = document.getElementById('dist').value
+        fetch(`${window.location.origin}/manufacturer/distribute/`, {
+                method: 'POST',
 
+                headers: {
+                    "X-CSRFToken": '{{csrf_token}}',
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    'value': val
+                }),
+            })
+            .then(res => res.json())
+            .then(data => document.getElementById("distribution").innerHTML = data.map((val, k) =>
+
+                `<tr >
+                    <td>${val['userid']}</td>
+                    <td>${val['name']}</td>
+                    <td>${val['contact']}</td>
+                    <td>${val['whatsapp']}</td>
+                    <td>${val['email']}</td>
+
+                </tr>   
+                `
+
+            ))
+
+        .catch(err => console.log(err))
+    }
+</script>
 {% endblock body %}

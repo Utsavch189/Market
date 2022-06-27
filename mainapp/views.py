@@ -215,7 +215,7 @@ def allnetwork(request):
                     ]
                 
                 )
-                n.append(obj.values('userid')[i]['userid'])
+                n.append(obj.values('userid')[i]['userid']+' '+obj.values('role')[i]['role'])
         if obj1.exists():
             for i in range(0,obj1.count()):
                 m.append(
@@ -224,7 +224,7 @@ def allnetwork(request):
                         
                     ]
                 )
-                n.append(obj1.values('userid')[i]['userid'])
+                n.append(obj1.values('userid')[i]['userid']+' '+obj1.values('role')[i]['role'])
 
         if obj2.exists():
             for i in range(0,obj2.count()):
@@ -234,7 +234,7 @@ def allnetwork(request):
                         
                     ]
                 )
-                n.append(obj2.values('userid')[i]['userid'])
+                n.append(obj2.values('userid')[i]['userid']+' '+obj2.values('role')[i]['role'])
         res.append(m)
         res.append(n)
         return Response(res)

@@ -79,7 +79,7 @@
             }
             .graph {
                 margin-top: 15px;
-                width: 60vw;
+                width: 65vw;
                 height: 80vw;
             }
             .map {
@@ -110,7 +110,7 @@
         </div>
 
 
-        <nav class="navbar navbar-light bg-light shadow-sm my-4 bg-body rounded">
+        <nav class="navbar navbar-light bg-light shadow-sm my-2 bg-body rounded">
             <div class="container-fluid mx-4 shadow-sm  bg-body rounded">
                 <div class="d-flex ">
                     <input class="form-control me-2 " type="search" placeholder="Search Distributor in map " aria-label="Search" id="search">
@@ -123,10 +123,9 @@
                 </div>
 
                 <div style="margin-right: 30px;">
-                    <label for="role" class="form-label">Best Selling Product Day wise</label><br>
+                    <label for="role" class="form-label">Best Selling Product Status</label><br>
                     <form>
                         <select name="role" id="days" required>
-                    <option value="None">Choose</option>
                     <option value="1">Today</option>
                     <option value="2">Yesterday</option>
                     <option value="7">Prev 7 days</option>
@@ -145,9 +144,9 @@
 
 
             <div class=" graph card shadow  bg-body rounded">
-                <h5 class="text-center">Best Selling Product</h5>
-                <canvas id="myChart" width="200" height="200"></canvas>
-                <canvas id="myChart1" width="200" height="200"></canvas>
+                <h6 class="text-center" id="graph">Best Selling Product of Today</h6>
+                <canvas id="myChart" width="250" height="250"></canvas>
+
             </div>
 
         </div>
@@ -296,7 +295,7 @@
                         data: {
                             labels: labels,
                             datasets: [{
-                                label: 'My First Dataset',
+                                label: 'Status',
                                 data: datas,
                                 backgroundColor: [
                                     'rgba(255, 99, 132, 0.2)',
@@ -328,6 +327,10 @@
 
 
         function show() {
+            let chartStatus = Chart.getChart("myChart")
+            if (chartStatus != undefined) {
+                chartStatus.destroy();
+            }
             var e = document.getElementById("days");
             var val = document.forms[0].days.value;
 
@@ -335,7 +338,18 @@
 
             let label = []
             let datas = []
-            let ctx1 = document.getElementById('myChart1').getContext('2d');
+
+            if (val === '1') {
+                document.getElementById('graph').innerText = 'Best Selling Product of Today'
+            } else if (val === '2') {
+                document.getElementById('graph').innerText = 'Best Selling Product of Yesterday'
+            } else if (val === '7') {
+                document.getElementById('graph').innerText = 'Best Selling Product since last 7 days'
+            } else if (val === '30') {
+                document.getElementById('graph').innerText = 'Best Selling Product since last 30 days'
+            }
+
+            let ctx = document.getElementById('myChart').getContext('2d');
 
             fetch(`${window.location.origin}/manufacturer/bestproductmanu/`, {
                     method: 'POST',
@@ -360,14 +374,14 @@
 
                     }
                     const labels = label
-                    console.log(label)
-                    const myChart = new Chart(ctx1, {
+
+                    const myChart = new Chart(ctx, {
                         type: 'bar',
 
                         data: {
                             labels: labels,
                             datasets: [{
-                                label: 'My First Dataset',
+                                label: 'Status',
                                 data: datas,
                                 backgroundColor: [
                                     'rgba(255, 99, 132, 0.2)',

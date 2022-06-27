@@ -302,6 +302,21 @@ def distribute(request):
                 distributors.append(data)
         return Response(distributors)
     elif request.method=='POST':
+        val=request.data['value']
+        obj=ApprovedUsers.objects.filter(role='Distributor')
+        distributor=obj.filter(userid=val)
+        if distributor.exists():
+            distributors=[]
+            
+            data={
+                    'userid':distributor.values('userid')[0]['userid'],
+                    'name':(distributor.values('first_name')[0]['first_name'])+' '+(distributor.values('last_name')[0]['last_name']),
+                    'contact':distributor.values('contact_no')[0]['contact_no'],
+                    'whatsapp':distributor.values('whatsapp_no')[0]['whatsapp_no'],
+                    'email':distributor.values('email')[0]['email'],
+            }
+            distributors.append(data)
+        return Response(distributors)
         return Response({'info':'Running'})
     else:
         return Response({'msg':'bad request','status':400})
@@ -330,7 +345,9 @@ def distributiondetails(request):
         msg=(request.data['msg'])
         if msg:
             obj=Distribute.objects.filter(manufacturer_id=request.user.username)
-            obj.delete()
+            r_obj=obj.filter(calculation_status=True)
+            if r_obj.exists():
+                r_obj.delete()
         return Response({'info':'Running'})
     else:
         return Response({'msg':'bad request','status':400})
@@ -368,15 +385,15 @@ def bestproductmanu(request):
            
 
     elif request.method=='POST':
-        val=request.data['value']
+        val=int(request.data['value'])
     
-        if val==int(1) or val==int(2):
+        if val==1 or val==2:
             p_obj=TotalProducts.objects.filter(manufacturer_id=request.user.username)
             prods=[]
             res=[]
             quant=[]
             if p_obj.exists():
-                obj=p_obj.filter(date=dates(int(val)))
+                obj=p_obj.filter(date=dates(val))
                 for i in range(0,obj.count()):
                 
                     prods.append(obj.values('product_name')[i]['product_name'])
