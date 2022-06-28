@@ -1,15 +1,6 @@
 {% extends 'Base.html' %} {% load static %} {% block title %} Home {% endblock title %} {% block body %} {% if request.user.is_anonymous %}
 
-<div class="main">
-    <div class="container button">
-
-
-
-    </div>
-
-
-
-</div>
+{% include 'startinghome.html' %}
 
 
 

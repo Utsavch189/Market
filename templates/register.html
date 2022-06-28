@@ -95,63 +95,67 @@
 <section class="wrapper my-3">
     <div class="container-fluid">
         <div class="col-sm-8 offset-sm-2 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4 text-center">
-            <form class="rounded bg-white shadow p-5" method="post" action="/register/">
-                {% csrf_token %}
-                <h3 class="text-dark fw-bolder fs-4 mb-2">Create an Account</h3>
-                <div class="fw-normal text-muted mb-4">
-                    Already an User? <a href="/login/" class="text-primary fw-bold text-decoration-none">Login here</a>
-                </div>
-                {% for message in messages %}
-                <div class="alert alert-success {% if message.tags == 'error' %} alert-danger {% elif message.tags == 'warning' %} alert-warning {% endif %}" role="alert">
-                    <strong>Message: </strong> {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                {% endfor %}
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="fname" name="fname" placeholder="First Name">
-                    <label for="fname">First Name</label>
-                </div>
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="lname" name="lname" placeholder="Last Name">
-                    <label for="lname">Last Name</label>
-                </div>
-                <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com">
-                    <label for="email">Email address</label>
-                </div>
-                <div class="form-floating mb-3">
+            <section class="rounded bg-white shadow p-5">
+                <form method="post" action="/register/">
+                    {% csrf_token %}
+                    <h3 class="text-dark fw-bolder fs-4 mb-2">Create an Account</h3>
+                    <div class="fw-normal text-muted mb-4">
+                        Already an User? <a href="/login/" class="text-primary fw-bold text-decoration-none">Login here</a>
+                    </div>
+                    {% for message in messages %}
+                    <div class="alert alert-success {% if message.tags == 'error' %} alert-danger {% elif message.tags == 'warning' %} alert-warning {% endif %}" role="alert">
+                        <strong>Message: </strong> {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="fname" name="fname" placeholder="First Name">
+                        <label for="fname">First Name</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="lname" name="lname" placeholder="Last Name">
+                        <label for="lname">Last Name</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com">
+                        <label for="email">Email address</label>
+                    </div>
+                    <div class="form-floating mb-3">
 
-                    <input type="text" class="form-control" id="cnum" name="cnum" placeholder="Contact number" required="required">
-                    <label for="cnum">Contact number</label>
-                </div>
+                        <input type="text" class="form-control" id="cnum" name="cnum" placeholder="Contact number" required="required">
+                        <label for="cnum">Contact number</label>
+                    </div>
 
-                <div class="form-floating mb-3">
+                    <div class="form-floating mb-3">
 
-                    <input type="text" class="form-control" id="wnum" name="wnum" placeholder="WhatsApp number" required="required">
-                    <label for="gurdian">WhatsApp number</label>
-                </div>
+                        <input type="text" class="form-control" id="wnum" name="wnum" placeholder="WhatsApp number" required="required">
+                        <label for="gurdian">WhatsApp number</label>
+                    </div>
 
-                <div class="">
-                    <label for="role" class="form-label">Select Your Role</label><br>
-                    <select name="role" id="role" required>
+                    <div class="">
+                        <label for="role" class="form-label">Select Your Role</label><br>
+                        <select name="role" id="role" required>
                     <option value="None">Choose</option>
                     <option value="Manufacturer">Manufacturer</option>
                     <option value="Distributor">Distributor</option>
                     <option value="Retailer">Retailer</option>
                 </select>
-                </div><br>
-                <div class="form-floating mb-3">
+                    </div><br>
+                    <div class="form-floating mb-3">
 
-                    <input type="text" class="form-control" id="lat" name="lat" placeholder="Latitude">
-                    <label for="gurdian">Your Latitude</label>
-                </div>
-                <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="lat" name="lat" placeholder="Latitude">
+                        <label for="gurdian">Your Latitude</label>
+                    </div>
+                    <div class="form-floating mb-3">
 
-                    <input type="text" class="form-control" id="long" name="long" placeholder="Longitude">
-                    <label for="gurdian">Your Longitude</label>
-                </div>
-                <button type="submit" class="btn btn-primary submit_btn w-100 my-4">Create Account</button>
-            </form>
+                        <input type="text" class="form-control" id="long" name="long" placeholder="Longitude">
+                        <label for="gurdian">Your Longitude</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary submit_btn w-100 my-4">Create Account</button>
+
+                </form>
+                <a href="/"> <button type="submit" class="btn btn-success submit_btn w-100 my-3">Back to Home</button></a>
+            </section>
         </div>
     </div>
 </section>

@@ -317,7 +317,7 @@ def distribute(request):
             }
             distributors.append(data)
         return Response(distributors)
-        return Response({'info':'Running'})
+        
     else:
         return Response({'msg':'bad request','status':400})
 
