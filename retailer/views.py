@@ -299,3 +299,94 @@ def statics(request):
         return Response({'info':'Running'})
     else:
         return Response({'msg':'bad request','status':400})
+
+
+
+@api_view(['GET','POST'])
+def bestproductmanu(request):
+    if request.method=='GET':
+            p_obj=TotalProducts.objects.filter(retailer_id=request.user.username)
+            prods=[]
+            res=[]
+            quant=[]
+            if p_obj.exists():
+                obj=p_obj.filter(date=dates(1))
+                for i in range(0,obj.count()):
+                
+                    prods.append(obj.values('product_name')[i]['product_name'])
+            
+              
+                for item in prods:
+                    n_obj=obj.filter(product_name=item)
+                    if n_obj.exists():
+                        quant.append(n_obj.values('product_quantity')[0]['product_quantity'])
+
+                res.append(prods)
+                res.append(quant)
+
+                return Response(res)
+           
+            else:
+                return Response({'info':'no data'})
+           
+
+    elif request.method=='POST':
+        val=int(request.data['value'])
+    
+        if val==1 or val==2:
+            p_obj=TotalProducts.objects.filter(retailer_id=request.user.username)
+            prods=[]
+            res=[]
+            quant=[]
+            if p_obj.exists():
+                obj=p_obj.filter(date=dates(val))
+                for i in range(0,obj.count()):
+                
+                    prods.append(obj.values('product_name')[i]['product_name'])
+            
+              
+                for item in prods:
+                    n_obj=obj.filter(product_name=item)
+                    if n_obj.exists():
+                        quant.append(n_obj.values('product_quantity')[0]['product_quantity'])
+
+                res.append(prods)
+                res.append(quant)
+
+                return Response(res)
+           
+            else:
+                return Response({'info':'no data'})
+        else:
+            p_obj=TotalProducts.objects.filter(retailer_id=request.user.username)
+            prods=set()
+        
+            res=[]
+            quant=[]
+        
+            date=dates(3)
+            for i in date:
+                obj=p_obj.filter(date=i)
+                if obj.exists():
+                    for j in range(0,obj.count()):
+                        prods.add(obj.values('product_name')[j]['product_name'])
+
+            new_prods=list(prods)
+
+            for item in new_prods:
+                total=0
+                c=p_obj.filter(product_name=item)
+                if c.count()==1:
+                    quant.append(int(c.values('product_quantity')[0]['product_quantity']))
+                else:
+                    for i in range(0,c.count()):
+                        total+=int(c.values('product_quantity')[i]['product_quantity'])
+                    quant.append(total)
+            res.append(new_prods)
+            res.append(quant)
+            return Response(res)
+        
+
+        
+    else:
+        return Response({'info':'bad request'})

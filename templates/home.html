@@ -13,7 +13,7 @@
 {% include 'manufacthome.html' %}  
 {% else %}
 {% ifequal request.user.last_name "Distributor" %} 
-dist 
+{% include 'distributorhome.html' %} 
 {% else %} 
 {% ifequal request.user.last_name "Retailer" %} 
 Retailer 

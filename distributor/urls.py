@@ -9,4 +9,5 @@ urlpatterns = [
     path('getretailers/',getretailers),
     path('gettotalproducts/',gettotalproducts),
     path('distributiondetails/',distributiondetails),
+    path('bestproductmanu/',bestproductmanu)
 ]

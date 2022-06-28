@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+import re
 from datetime import date
 from django.contrib import messages
 from rest_framework.response import Response
@@ -71,7 +71,7 @@ def loginn(request):
             return redirect('home')
 
         else:
-            messages.warning(request, 'Wrong Username or Password')
+            messages.error(request, 'Wrong Username or Password')
 
         return render(request,'login.html')
     return render(request,'login.html')    
@@ -119,8 +119,10 @@ def logoutt(request):
 def manufact(request):
     if request.method=='GET':
         obj=ApprovedUsers.objects.filter(role='Manufacturer')
+        
         m=[]
         n=[]
+       
         res=[]
         if obj.exists():
             for i in range(0,obj.count()):
@@ -130,7 +132,8 @@ def manufact(request):
                        
                     ]
                 )
-                n.append(obj.values('userid')[i]['userid'])
+                n.append(obj.values('userid')[i]['userid']+' '+obj.values('role')[i]['role'])
+            
             res.append(m)
             res.append(n)
 
@@ -157,7 +160,7 @@ def distribut(request):
                         
                     ]
                 )
-                n.append(obj.values('userid')[i]['userid'])
+                n.append(obj.values('userid')[i]['userid']+' '+obj.values('role')[i]['role'])
             res.append(m)
             res.append(n)
 
@@ -186,7 +189,7 @@ def retailer(request):
                         
                     ]
                 )
-                n.append(obj.values('userid')[i]['userid'])
+                n.append(obj.values('userid')[i]['userid']+' '+obj.values('role')[i]['role'])
             res.append(m)
             res.append(n)
 

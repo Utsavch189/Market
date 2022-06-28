@@ -1,0 +1,477 @@
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel=stylesheet href="https://fonts.googleapis.com/css?family=Material+Icons">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.8.2/mapbox-gl.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Alegreya:ital@1&family=Lato:ital,wght@1,300&family=Libre+Baskerville&family=Montserrat:ital,wght@1,300&family=Open+Sans:ital,wght@1,300&family=PT+Sans+Narrow&family=Playfair+Display:ital@0;1&family=Roboto+Condensed&family=Source+Serif+Pro:ital,wght@1,300&family=Zen+Antique+Soft&display=swap');
+        .mainn {
+            height: 93vh;
+            width: 100vw;
+            font-family: 'Alegreya', serif;
+            font-family: 'Lato', sans-serif;
+            font-family: 'Libre Baskerville', serif;
+            font-family: 'Montserrat', sans-serif;
+            font-family: 'Open Sans', sans-serif;
+            font-family: 'Playfair Display', serif;
+            font-family: 'PT Sans Narrow', sans-serif;
+            font-family: 'Roboto Condensed', sans-serif;
+            font-family: 'Source Serif Pro', serif;
+            font-family: 'Zen Antique Soft', serif;
+        }
+        
+        .top {
+            background-color: rgb(255, 251, 251);
+            height: 65px;
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-around;
+            overflow: hidden;
+            text-align: center;
+        }
+        
+        .shop {
+            height: 65px;
+            width: 280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .login {
+            height: 65px;
+            width: 280px;
+        }
+        
+        .middle {
+            height: 75vh;
+            display: flex;
+            justify-content: space-between;
+            overflow: hidden;
+            flex-wrap: nowrap;
+        }
+        
+        .map {
+            height: 70vh;
+            width: 65vw;
+        }
+        
+        .graph {
+            margin-top: 36px;
+            height: 67vh;
+            width: 30vw;
+        }
+        
+        .bottom {
+            height: 80vh;
+            width: 40%;
+            box-shadow: 2px 5px 3px 5px rgb(230, 226, 226);
+        }
+        
+        @media screen and (max-width: 1200px) {
+            .middle {
+                height: 900px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+            .graph {
+                margin-top: 15px;
+                width: 65vw;
+                height: 80vw;
+            }
+            .map {
+                height: 100vw;
+                height: 30vh;
+            }
+            .bottom {
+                width: 100vw;
+                height: 50vh;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+
+    <section class="mainn">
+        <div class="container-fluid top shadow  bg-body rounded">
+            <div class="shop">
+                <h4 class="text-left">Dashboard</h4>
+            </div>
+            <div class="login">
+                <h4 class="text-right">{{request.user.last_name}}</h4>
+                <h6 class="text-right">{{request.user.first_name}}</h6>
+            </div>
+        </div>
+
+
+        <nav class="navbar navbar-light bg-light shadow-sm my-2 bg-body rounded">
+            <div class="container-fluid mx-4 shadow-sm  bg-body rounded">
+                <div class="d-flex ">
+                    <input class="form-control me-2 " type="search" placeholder="Search Distributor in map " aria-label="Search" id="search">
+                    <button class="btn btn-outline-success" type="submit" id="btn">Search</button>
+
+
+
+
+
+                </div>
+                <button class="btn btn-outline-success my-2" type="submit" id="manu">Search Manufacturers</button>
+                <div style="margin-right: 30px;">
+                    <label for="role" class="form-label">Best Selling Product Status</label><br>
+                    <form>
+                        <select name="role" id="days" required>
+                    <option value="1">Today</option>
+                    <option value="2">Yesterday</option>
+                    <option value="7">Prev 7 days</option>
+                    <option value="30">Prev 30 days</option>
+                        </select>
+                    </form>
+                </div>
+            </div>
+        </nav>
+        <div class="container-fluid middle my-2 shadow-sm  bg-body rounded">
+            <section>
+                <h6 class="text-center" id="info"></h6>
+                <div class=" map card shadow  bg-body rounded" id="map"></div>
+            </section>
+
+
+
+            <div class=" graph card shadow  bg-body rounded">
+                <h6 class="text-center" id="graph">Best Selling Product of Today</h6>
+                <canvas id="myChart" width="250" height="250"></canvas>
+
+            </div>
+
+        </div>
+
+    </section>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.js'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.0/chart.min.js"></script>
+    <script>
+        function map() {
+
+
+            let co = []
+
+
+            let manu = []
+
+            let c1;
+            let users = []
+            let pops = []
+
+            fetch(`${window.location.origin}/retailer/`)
+                .then(res => res.json())
+                .then(data => {
+                    for (let i = 0; i < data[0].length; i++) {
+                        manu.push(data[0][i])
+
+                    }
+                    for (let i = 0; i < data[1].length; i++) {
+                        users.push(data[1][i])
+
+                    }
+                    c1 = parseInt(manu.length / 2);
+
+                    mapboxgl.accessToken = 'pk.eyJ1IjoidXRzYXYxMjM3NiIsImEiOiJjbDJzZ2txN3AwNWJwM2RwZDd3bnl2d3FvIn0.dz567SK8Zp8Is83HZL1WWg';
+                    const map = new mapboxgl.Map({
+
+                        container: 'map',
+                        style: 'mapbox://styles/mapbox/streets-v11',
+                        center: manu[c1],
+                        zoom: 10
+                    }, );
+
+                    document.getElementById('info').innerText='All Retailers Networks In Map'
+
+                    for (let i = 0; i < manu.length; i++) {
+
+                        co.push(new mapboxgl.Marker({
+                            color: 'black'
+                        }).setLngLat(manu[i]))
+
+                        pops.push(new mapboxgl.Popup({
+                                closeOnClick: false
+                            })
+                            .setLngLat(manu[i]))
+
+
+                    }
+                    for (let i = 0; i < co.length; i++) {
+                        co[i].addTo(map)
+
+                    }
+                    for (let j = 0; j < pops.length; j++) {
+
+                        pops[j].setHTML(`<h6>${users[j]}</h6>`).addTo(map)
+                    }
+                })
+
+        }
+        map()
+
+
+document.getElementById('manu').onclick=()=>{
+    let co = []
+
+
+    let manu = []
+
+    let c1;
+    let users = []
+    let pops = []
+
+    fetch(`${window.location.origin}/manufact/`)
+        .then(res => res.json())
+        .then(data => {
+            for (let i = 0; i < data[0].length; i++) {
+                manu.push(data[0][i])
+
+            }
+            for (let i = 0; i < data[1].length; i++) {
+                users.push(data[1][i])
+
+            }
+            c1 = parseInt(manu.length / 2);
+
+            mapboxgl.accessToken = 'pk.eyJ1IjoidXRzYXYxMjM3NiIsImEiOiJjbDJzZ2txN3AwNWJwM2RwZDd3bnl2d3FvIn0.dz567SK8Zp8Is83HZL1WWg';
+            const map = new mapboxgl.Map({
+
+                container: 'map',
+                style: 'mapbox://styles/mapbox/streets-v11',
+                center: manu[c1],
+                zoom: 10
+            }, );
+
+            document.getElementById('info').innerText='All Manufacturers Networks In Map'
+
+            for (let i = 0; i < manu.length; i++) {
+
+                co.push(new mapboxgl.Marker({
+                    color: 'black'
+                }).setLngLat(manu[i]))
+
+                pops.push(new mapboxgl.Popup({
+                        closeOnClick: false
+                    })
+                    .setLngLat(manu[i]))
+
+
+            }
+            for (let i = 0; i < co.length; i++) {
+                co[i].addTo(map)
+
+            }
+            for (let j = 0; j < pops.length; j++) {
+
+                pops[j].setHTML(`<h6>${users[j]}</h6>`).addTo(map)
+            }
+        })
+}
+
+
+        document.getElementById('btn').onclick = () => {
+
+
+            let co = []
+
+
+            let manu = []
+
+            let c1;
+
+            let val = document.getElementById('search').value
+            if (val !== null) {
+                console.log(val)
+                fetch(`${window.location.origin}/allnetwork/`, {
+                        method: 'POST',
+
+                        headers: {
+                            "X-CSRFToken": '{{csrf_token}}',
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            'msg': val
+                        }),
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+
+                        manu.push(data[0])
+
+                        mapboxgl.accessToken = 'pk.eyJ1IjoidXRzYXYxMjM3NiIsImEiOiJjbDJzZ2txN3AwNWJwM2RwZDd3bnl2d3FvIn0.dz567SK8Zp8Is83HZL1WWg';
+                        const map = new mapboxgl.Map({
+
+                            container: 'map',
+                            style: 'mapbox://styles/mapbox/streets-v11',
+                            center: manu[0],
+                            zoom: 10
+                        }, );
+
+                        const popup = new mapboxgl.Popup({
+                                closeOnClick: false
+                            })
+                            .setLngLat(manu[0])
+                            .setHTML(`<h6>${val}</h6>`)
+                            .addTo(map)
+
+                        new mapboxgl.Marker({
+                            color: 'red'
+                        }).setLngLat(manu[0]).addTo(map)
+
+                    })
+
+            }
+        }
+
+
+        function bargraph() {
+            let label = []
+            let datas = []
+            const ctx = document.getElementById('myChart').getContext('2d');
+            fetch(`${window.location.origin}/distributor/bestproductmanu/`)
+                .then(res => res.json())
+                .then(data => {
+                    for (let i = 0; i < data[0].length; i++) {
+                        label.push(data[0][i])
+
+                    }
+                    for (let i = 0; i < data[1].length; i++) {
+                        datas.push(data[1][i])
+
+                    }
+                    const labels = label
+                    const myChart = new Chart(ctx, {
+                        type: 'bar',
+
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Status',
+                                data: datas,
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(255, 159, 64, 0.2)',
+                                    'rgba(255, 205, 86, 0.2)',
+                                    'rgba(75, 192, 192, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(153, 102, 255, 0.2)',
+                                    'rgba(201, 203, 207, 0.2)'
+                                ],
+                                borderColor: [
+                                    'rgb(255, 99, 132)',
+                                    'rgb(255, 159, 64)',
+                                    'rgb(255, 205, 86)',
+                                    'rgb(75, 192, 192)',
+                                    'rgb(54, 162, 235)',
+                                    'rgb(153, 102, 255)',
+                                    'rgb(201, 203, 207)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        }
+                    });
+                })
+        }
+        bargraph()
+
+
+
+
+        function show() {
+            let chartStatus = Chart.getChart("myChart")
+            if (chartStatus != undefined) {
+                chartStatus.destroy();
+            }
+            var e = document.getElementById("days");
+            var val = document.forms[0].days.value;
+
+            e.onchange = show;
+
+            let label = []
+            let datas = []
+
+            if (val === '1') {
+                document.getElementById('graph').innerText = 'Best Selling Product of Today'
+            } else if (val === '2') {
+                document.getElementById('graph').innerText = 'Best Selling Product of Yesterday'
+            } else if (val === '7') {
+                document.getElementById('graph').innerText = 'Best Selling Product since last 7 days'
+            } else if (val === '30') {
+                document.getElementById('graph').innerText = 'Best Selling Product since last 30 days'
+            }
+
+            let ctx = document.getElementById('myChart').getContext('2d');
+
+            fetch(`${window.location.origin}/distributor/bestproductmanu/`, {
+                    method: 'POST',
+
+                    headers: {
+                        "X-CSRFToken": '{{csrf_token}}',
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        'value': val
+                    }),
+                })
+                .then(res => res.json())
+                .then(data => {
+                    for (let i = 0; i < data[0].length; i++) {
+                        label.push(data[0][i])
+
+                    }
+                    for (let i = 0; i < data[1].length; i++) {
+                        datas.push(data[1][i])
+
+                    }
+                    const labels = label
+
+                    const myChart = new Chart(ctx, {
+                        type: 'bar',
+
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Status',
+                                data: datas,
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(255, 159, 64, 0.2)',
+                                    'rgba(255, 205, 86, 0.2)',
+                                    'rgba(75, 192, 192, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(153, 102, 255, 0.2)',
+                                    'rgba(201, 203, 207, 0.2)'
+                                ],
+                                borderColor: [
+                                    'rgb(255, 99, 132)',
+                                    'rgb(255, 159, 64)',
+                                    'rgb(255, 205, 86)',
+                                    'rgb(75, 192, 192)',
+                                    'rgb(54, 162, 235)',
+                                    'rgb(153, 102, 255)',
+                                    'rgb(201, 203, 207)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        }
+                    });
+                })
+
+
+
+
+        }
+
+        show();
+    </script>
+</body>
