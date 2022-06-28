@@ -77,17 +77,17 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/">Home</a>
+            <a class="nav-link active" aria-current="page" href="/"><i class="fa fa-home" style="font-size:15px"></i>Home</a>
           </li>
      
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/distributor/retailerChanel/">Retailer Network</a>
+            <a class="nav-link active" aria-current="page" href="/distributor/retailerChanel/"><i class="fa fa-globe" style="font-size:15px"></i>Retailer Network</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/distributor/products/">Products in Stock</a>
+            <a class="nav-link active" aria-current="page" href="/distributor/products/"><i class="fa fa-shopping-basket" style="font-size:15px"></i>Products in Stock</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/distributor/distribute/">Distribute</a>
+            <a class="nav-link active" aria-current="page" href="/distributor/distribute/"><i class="fa fa-share" style="font-size:15px"></i>Distribute</a>
           </li>
           
           <li class="nav-item">
@@ -98,7 +98,7 @@
 
 {% else %}
 {% ifequal  request.user.last_name "Retailer" %}
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
     <a class="navbar-brand" href="/">Navbar</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -107,17 +107,17 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="/">Home</a>
+          <a class="nav-link active" aria-current="page" href="/"><i class="fa fa-home" style="font-size:15px"></i>Home</a>
         </li>
 
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="/retailer/stock/">Products in Stock</a>
+          <a class="nav-link active" aria-current="page" href="/retailer/stock/"><i class="fa fa-shopping-basket" style="font-size:15px"></i>Products in Stock</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="/retailer/sell/">Sell the Products</a>
+          <a class="nav-link active" aria-current="page" href="/retailer/sell/"><i class="fa fa-share" style="font-size:15px"></i>Sell the Products</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="/logout/">Logout</a>
+          <a class="nav-link active" aria-current="page" href="/logout/"><i class="fas fa-sign-out" style="font-size:15px"></i>Logout</a>
         </li>
       </ul>
 </nav>
