@@ -132,6 +132,12 @@ def retailerChanel(request):
 
 
 @login_required(login_url='http://127.0.0.1:8000/login/')
+def manufacturerchanel(request):
+    return render(request,'distributor/manufacturerchanel.html')
+
+
+
+@login_required(login_url='http://127.0.0.1:8000/login/')
 def products(request):
     if request.method=='GET':
         pro=set()
@@ -259,6 +265,44 @@ def getretailers(request):
         return Response({'info':'Running'})
     else:
         return Response({'msg':'bad request','status':400})
+
+
+
+
+@api_view(['GET','POST'])
+def getmanufacturers(request):
+    if request.method=='GET':
+        retail=[]
+        obj=ApprovedUsers.objects.filter(role='Manufacturer')
+        if obj.exists():
+            for i in range(0,obj.count()):
+              
+                
+                data={
+                    'userid':obj.values('userid')[i]['userid'],
+                    'username':obj.values('first_name')[i]['first_name']+' '+obj.values('last_name')[i]['last_name'],
+                    'email':obj.values('email')[0]['email'],
+                    'conatact':obj.values('contact_no')[0]['contact_no'],
+                    'whatsapp':obj.values('whatsapp_no')[i]['whatsapp_no'],
+                   
+                }
+        
+                retail.append(data)
+            return Response(retail)
+        else:
+            return Response({'info':'no data'})
+        
+            
+        
+    elif request.method=='POST':
+        return Response({'info':'Running'})
+    else:
+        return Response({'msg':'bad request','status':400})
+
+
+
+
+
 
 
 
