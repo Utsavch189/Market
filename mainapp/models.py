@@ -9,7 +9,7 @@ class Register(models.Model):
     whatsapp_no=models.CharField(null=True,blank=True,max_length=500)
     role=models.CharField(null=True,blank=True,max_length=500)
     created_at=models.DateField(date.today())
-    number=models.CharField(null=True,blank=True,max_length=50000000)
+    number=models.IntegerField(null=True,blank=True,default=0)
     latitude=models.CharField(null=True,blank=True,max_length=500)
     longitude=models.CharField(null=True,blank=True,max_length=500)
 

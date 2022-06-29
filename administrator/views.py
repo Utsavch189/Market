@@ -21,10 +21,10 @@ def index(request):
         val=request.POST.get('role')
         approved=request.POST.get('approved')
      
-        obj=Register.objects.filter(number=str(val))
+        obj=Register.objects.filter(number=(val))
         obj.delete()
         if approved!=None:
-            r_obj=Register.objects.filter(number=str(approved))
+            r_obj=Register.objects.filter(number=(approved))
             if r_obj.exists():
                 
                 Password=password()
