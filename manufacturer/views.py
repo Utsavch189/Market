@@ -359,12 +359,43 @@ def distributiondetails(request):
         return Response(dist)
     elif request.method=='POST':
         msg=(request.data['msg'])
+        val=request.data['value']
         if msg:
             obj=Distribute.objects.filter(manufacturer_id=request.user.username)
             r_obj=obj.filter(calculation_status=True)
             if r_obj.exists():
                 r_obj.delete()
-        return Response({'info':'Running'})
+
+        if val:
+            objs=Distribute.objects.filter(manufacturer_id=request.user.username)
+            a_obj=objs.filter(user=val)
+            b_obj=ApprovedUsers.objects.filter(username=val)
+            users=[]
+            if a_obj.exists():
+                data={
+                    'id':a_obj.values('user')[i]['user'],
+                    'users':a_obj.values('username')[i]['username'],
+                    'product_id':a_obj.values('product_id')[i]['product_id'],
+                    'product_name':a_obj.values('product_name')[i]['product_name'],
+                    'product_quantity':a_obj.values('product_quantity')[i]['product_quantity'],
+                    'total_price':a_obj.values('total_price')[i]['total_price']
+                }
+                users.append(data)
+                return Response(users)
+            elif b_obj.exists():
+                data={
+                    'id':b_obj.values('user')[i]['user'],
+                    'users':b_obj.values('username')[i]['username'],
+                    'product_id':b_obj.values('product_id')[i]['product_id'],
+                    'product_name':b_obj.values('product_name')[i]['product_name'],
+                    'product_quantity':b_obj.values('product_quantity')[i]['product_quantity'],
+                    'total_price':b_obj.values('total_price')[i]['total_price']
+                }
+                users.append(data)
+                return Response(users)
+            else:
+                return Response(users)
+        
     else:
         return Response({'msg':'bad request','status':400})
 

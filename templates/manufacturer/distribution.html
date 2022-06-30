@@ -38,6 +38,10 @@
 
     <h3 class="pb-4 my-2">Distribution Details:</h3>
     <button class="btn btn-danger" id="records">Delete All Records</button>
+    <div class="conatiner input my-2" style="width: 230px;"> <label for="number" class="form-label">Search User</label>
+        <input type="text" class="form-control" id="dist" name="dist" placeholder="Search User">
+    </div>
+    <button type="submit" class="btn btn-outline-primary my-2" value="register" id="search">Search</button>
     <div class="table-responsive table table-bordered my-2">
         <table class="table bg-white" id="example-table">
             <thead class="bg-dark text-light">
@@ -110,5 +114,40 @@
 
     }
     distdetails()
+
+
+    document.getElementById('search').onclick = () => {
+        val = document.getElementById('dist').value
+        fetch(`${window.location.origin}/manufacturer/distributiondetails/`, {
+                method: 'POST',
+
+                headers: {
+                    "X-CSRFToken": '{{csrf_token}}',
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    'value': val
+                }),
+            })
+            .then(res => res.json())
+            .then(data => document.getElementById("distributiondetails").innerHTML = data.map((val, k) =>
+
+                `<tr >
+                    <td>${val['id']}</td>
+                    <td>${val['users']}</td>
+                    <td>${val['product_id']}</td>
+                    <td>${val['product_name']}</td>
+                    <td>${val['product_quantity']}</td>
+                    <td>${val['total_price']}</td>
+    
+                </tr>   
+                `
+            ))
+            .catch(err => console.log(err))
+    }
+
+
+
 </script>
 {% endblock body %}
