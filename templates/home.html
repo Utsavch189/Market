@@ -16,7 +16,7 @@
 {% include 'distributorhome.html' %} 
 {% else %} 
 {% ifequal request.user.last_name "Retailer" %} 
-Retailer 
+{% include 'retailerhome.html' %} 
 {% else %} 
 superuser 
 {% endifequal %} 
