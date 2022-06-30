@@ -170,7 +170,35 @@ def approve(request):
             
         return Response({'info':'You have no permission!'})
     elif request.method=='POST':
-        return Response({'info':'Running'})
+        val=request.data['value']
+        a_obj=ApprovedUsers.objects.filter(userid=val)
+        b_obj=ApprovedUsers.objects.filter(first_name=val)
+        users=[]
+        if a_obj.exists():
+            data={
+                'userid':a_obj.values('userid')[0]['userid'],
+                 'name':a_obj.values('first_name')[0]['first_name']+' '+a_obj.values('last_name')[0]['last_name'],
+                 'email':a_obj.values('email')[0]['email'],
+                 'contact':a_obj.values('contact_no')[0]['contact_no'],
+                 'whatsapp':a_obj.values('whatsapp_no')[0]['whatsapp_no'],
+                 'role':a_obj.values('role')[0]['role']
+            }
+            users.append(data)
+            return Response(users)
+        elif b_obj.exists():
+             data={
+                'userid':b_obj.values('userid')[0]['userid'],
+                 'name':b_obj.values('first_name')[0]['first_name']+' '+b_obj.values('last_name')[0]['last_name'],
+                 'email':b_obj.values('email')[0]['email'],
+                 'contact':b_obj.values('contact_no')[0]['contact_no'],
+                 'whatsapp':b_obj.values('whatsapp_no')[0]['whatsapp_no'],
+                 'role':b_obj.values('role')[0]['role']
+            }
+             users.append(data)
+             return Response(users)
+        else:
+            return Response(users)
+        
     else:
         return Response({'msg':'bad request','status':400})
 

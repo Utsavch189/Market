@@ -303,20 +303,36 @@ def distribute(request):
         return Response(distributors)
     elif request.method=='POST':
         val=request.data['value']
+        distributors=[]
         obj=ApprovedUsers.objects.filter(role='Distributor')
-        distributor=obj.filter(userid=val)
-        if distributor.exists():
-            distributors=[]
+        distributor1=obj.filter(userid=val)
+        distributor2=obj.filter(first_name=val)
+        if distributor1.exists():
+            
             
             data={
-                    'userid':distributor.values('userid')[0]['userid'],
-                    'name':(distributor.values('first_name')[0]['first_name'])+' '+(distributor.values('last_name')[0]['last_name']),
-                    'contact':distributor.values('contact_no')[0]['contact_no'],
-                    'whatsapp':distributor.values('whatsapp_no')[0]['whatsapp_no'],
-                    'email':distributor.values('email')[0]['email'],
+                    'userid':distributor1.values('userid')[0]['userid'],
+                    'name':(distributor1.values('first_name')[0]['first_name'])+' '+(distributor1.values('last_name')[0]['last_name']),
+                    'contact':distributor1.values('contact_no')[0]['contact_no'],
+                    'whatsapp':distributor1.values('whatsapp_no')[0]['whatsapp_no'],
+                    'email':distributor1.values('email')[0]['email'],
             }
             distributors.append(data)
-        return Response(distributors)
+            return Response(distributors)
+        elif distributor2.exists():
+              data={
+                    'userid':distributor2.values('userid')[0]['userid'],
+                    'name':(distributor2.values('first_name')[0]['first_name'])+' '+(distributor2.values('last_name')[0]['last_name']),
+                    'contact':distributor2.values('contact_no')[0]['contact_no'],
+                    'whatsapp':distributor2.values('whatsapp_no')[0]['whatsapp_no'],
+                    'email':distributor2.values('email')[0]['email'],
+            }
+              distributors.append(data)
+              return Response(distributors)
+
+        else:
+            return Response(distributors)
+      
         
     else:
         return Response({'msg':'bad request','status':400})
