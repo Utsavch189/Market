@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='register',
             name='number',
-            field=models.CharField(blank=True, max_length=50000000, null=True),
+            field=models.CharField(blank=True, max_length=5000, null=True),
         ),
     ]

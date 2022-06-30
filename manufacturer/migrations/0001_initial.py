@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(blank=True, max_length=500, null=True)),
                 ('price', models.CharField(blank=True, max_length=500, null=True)),
                 ('description', models.CharField(blank=True, max_length=1500, null=True)),
-                ('production_no', models.CharField(blank=True, max_length=150000000000000, null=True)),
+                ('production_no', models.CharField(blank=True, max_length=150, null=True)),
                 ('production_date', models.DateField(verbose_name=datetime.date(2022, 6, 5))),
                 ('author', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='manufacturer.setproduct')),
             ],
